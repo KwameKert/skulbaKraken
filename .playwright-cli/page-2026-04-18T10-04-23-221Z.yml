@@ -1,0 +1,310 @@
+- generic [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - link [ref=e313] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e314]
+        - link [ref=e315] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - generic [ref=e10]: 﫻
+      - generic [ref=e13]:
+        - generic [ref=e14]: "Sms Balance: 0"
+        - combobox [ref=e16]: 
+        - combobox [ref=e18]
+        - link [ref=e316] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - generic [ref=e21]: 
+        - link [ref=e317] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - generic [ref=e24]: 
+        - link [ref=e318] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - generic [ref=e27]: 
+        - link [ref=e319] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - generic [ref=e30]: 
+        - link [ref=e320] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - img [ref=e321]
+      - text: 
+    - generic [ref=e39]:
+      - list [ref=e40]:
+        - listitem [ref=e41]:
+          - link [ref=e322] [cursor=pointer]:
+            - /url: javascript:void(0);
+            - img [ref=e323]
+      - list [ref=e44]:
+        - listitem [ref=e45]:
+          - heading [level=6] [ref=e324]:
+            - generic [ref=e47]: Main
+          - list [ref=e48]:
+            - listitem [ref=e49]:
+              - link [ref=e325] [cursor=pointer]:
+                - /url: /dashboard
+                - generic [ref=e51]: 
+                - generic [ref=e52]: Dashboard
+        - listitem [ref=e53]:
+          - heading [level=6] [ref=e326]:
+            - generic [ref=e55]: Peoples
+          - list [ref=e56]:
+            - listitem [ref=e57]:
+              - link [ref=e327] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e59]: 
+                - generic [ref=e60]: Students
+        - listitem [ref=e62]:
+          - heading [level=6] [ref=e328]:
+            - generic [ref=e64]: Academics
+          - list [ref=e65]:
+            - listitem [ref=e66]:
+              - link [ref=e329] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e68]: 
+                - generic [ref=e69]: Classes
+            - listitem [ref=e71]:
+              - link [ref=e330] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e73]: 
+                - generic [ref=e74]: Courses
+            - listitem [ref=e76]:
+              - link [ref=e331] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e78]: 
+                - generic [ref=e79]: Terms
+            - listitem [ref=e81]:
+              - link [ref=e332] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e83]: 
+                - generic [ref=e84]: Academic Year
+            - listitem [ref=e86]:
+              - link [ref=e333] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e88]: 
+                - generic [ref=e89]: Grades
+            - listitem [ref=e91]:
+              - link [ref=e334] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e93]: 
+                - generic [ref=e94]: Timetable
+        - listitem [ref=e96]:
+          - heading [level=6] [ref=e335]:
+            - generic [ref=e98]: Staff
+          - list [ref=e99]:
+            - listitem [ref=e100]:
+              - link [ref=e336] [cursor=pointer]:
+                - /url: /peoples/staff/staff-list
+                - generic [ref=e102]: 﨡
+                - generic [ref=e103]: Staff
+        - listitem [ref=e104]:
+          - heading [level=6] [ref=e337]:
+            - generic [ref=e106]: Announcements
+          - list [ref=e107]:
+            - listitem [ref=e108]:
+              - link [ref=e338] [cursor=pointer]:
+                - /url: /announcements/list
+                - generic [ref=e110]: 
+                - generic [ref=e111]: Announcements
+        - listitem [ref=e112]:
+          - heading [level=6] [ref=e339]:
+            - generic [ref=e114]: Attendance
+          - list [ref=e115]:
+            - listitem [ref=e116]:
+              - link [ref=e340] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e118]: 
+                - generic [ref=e119]: Attendance
+        - listitem [ref=e121]:
+          - heading [level=6] [ref=e341]:
+            - generic [ref=e123]: Finance
+          - list [ref=e124]:
+            - listitem [ref=e125]:
+              - link [ref=e342] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e127]: 
+                - generic [ref=e128]: Fees Collection
+            - listitem [ref=e130]:
+              - link [ref=e343] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e132]: 
+                - generic [ref=e133]: Accounting
+            - listitem [ref=e135]:
+              - link [ref=e344] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e137]: 
+                - generic [ref=e138]: Billings
+            - listitem [ref=e140]:
+              - link [ref=e345] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e142]: 
+                - generic [ref=e143]: Budgets
+            - listitem [ref=e145]:
+              - link [ref=e346] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e147]: 
+                - generic [ref=e148]: Approvals
+            - listitem [ref=e150]:
+              - link [ref=e347] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e152]: 
+                - generic [ref=e153]: Payroll
+        - listitem [ref=e155]:
+          - heading [level=6] [ref=e348]:
+            - generic [ref=e157]: Reports
+          - list [ref=e158]:
+            - listitem [ref=e159]:
+              - link [ref=e349] [cursor=pointer]:
+                - /url: /reports/fees-report
+                - generic [ref=e161]: 
+                - generic [ref=e162]: Fee Report
+        - listitem [ref=e163]:
+          - heading [level=6] [ref=e350]:
+            - generic [ref=e165]: Settings
+          - list [ref=e166]:
+            - listitem [ref=e167]:
+              - link [ref=e351] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e169]: ﮎ
+                - generic [ref=e170]: Academic Settings
+        - listitem [ref=e172]:
+          - heading [level=6] [ref=e352]:
+            - generic [ref=e174]: Audit
+          - list [ref=e175]:
+            - listitem [ref=e176]:
+              - link [ref=e353] [cursor=pointer]:
+                - /url: /audit/logs
+                - generic [ref=e178]: 
+                - generic [ref=e179]: Audit
+    - generic [ref=e188]:
+      - generic [ref=e189]:
+        - generic [ref=e190]:
+          - heading [level=3] [ref=e354]: Academic Year List
+          - navigation [ref=e192]:
+            - list [ref=e193]:
+              - listitem [ref=e194]:
+                - link [ref=e355] [cursor=pointer]:
+                  - /url: /dashboard
+                  - text: Dashboard
+              - listitem [ref=e196]:
+                - text: /
+                - link [ref=e356] [cursor=pointer]:
+                  - /url: javascript:void(0);
+                  - text: Academic Years
+              - listitem [ref=e198]: / All Academic Years
+        - generic [ref=e199]:
+          - generic [ref=e200]:
+            - link [ref=e357] [cursor=pointer]:
+              - /url: javascript:void(0);
+              - generic [ref=e202]: 
+            - link [ref=e358] [cursor=pointer]:
+              - /url: javascript:void(0);
+              - generic [ref=e204]: 
+          - link [ref=e359] [cursor=pointer]:
+            - /url: javascript:void(0);
+            - generic [ref=e207]: 
+            - text: Add Academic Year
+      - generic [ref=e208]:
+        - generic [ref=e209]:
+          - heading [level=4] [ref=e360]: Academic Years List
+          - link [ref=e361] [cursor=pointer]:
+            - /url: javascript:void(0);
+            - generic [ref=e214]: 
+            - text: Filter 
+        - generic [ref=e215]:
+          - searchbox [ref=e222]
+          - generic [ref=e223]:
+            - table [ref=e224]:
+              - rowgroup [ref=e225]:
+                - row [ref=e362]:
+                  - columnheader [ref=e363]:
+                    - button [ref=e364] [cursor=pointer]:
+                      - generic [ref=e229]: ID
+                      - generic [ref=e230]:
+                        - text: 
+                        - img [ref=e231]
+                        - text: 
+                  - columnheader [ref=e365]:
+                    - button [ref=e366] [cursor=pointer]:
+                      - generic [ref=e235]: Name
+                      - generic [ref=e236]:
+                        - text: 
+                        - img [ref=e237]
+                        - text: 
+                  - columnheader [ref=e367]:
+                    - button [ref=e368] [cursor=pointer]:
+                      - generic [ref=e241]: Status
+                      - generic [ref=e242]:
+                        - text: 
+                        - img [ref=e243]
+                        - text: 
+                  - columnheader [ref=e369]:
+                    - button [ref=e370] [cursor=pointer]:
+                      - generic [ref=e247]: Start Date
+                      - generic [ref=e248]:
+                        - text: 
+                        - img [ref=e249]
+                        - text: 
+                  - columnheader [ref=e371]:
+                    - button [ref=e372] [cursor=pointer]:
+                      - generic [ref=e253]: End Date
+                      - generic [ref=e254]:
+                        - text: 
+                        - img [ref=e255]
+                        - text: 
+                  - columnheader [ref=e373]: Action
+              - rowgroup [ref=e258]:
+                - row [ref=e374]:
+                  - cell [ref=e375]:
+                    - link [ref=e376] [cursor=pointer]:
+                      - /url: javascript:void(0);
+                      - text: "1"
+                  - cell [ref=e377]: test
+                  - cell [ref=e378]:
+                    - generic [ref=e264]:
+                      - generic [ref=e265]: 
+                      - text: ACTIVE
+                  - cell [ref=e379]: 4/17/26, 12:00 AM
+                  - cell [ref=e380]: 5/3/26, 12:00 AM
+                  - cell [ref=e381]:
+                    - generic [ref=e270]:
+                      - link [ref=e382] [cursor=pointer]:
+                        - /url: javascript:void(0);
+                        - generic [ref=e272]: 
+                      - text:  
+            - group [ref=e273]:
+              - generic [ref=e275]:
+                - generic [ref=e276]:
+                  - generic [ref=e277]: "Items per page:"
+                  - combobox [ref=e383] [cursor=pointer]:
+                    - generic [ref=e283]:
+                      - generic [ref=e285]: "10"
+                      - img [ref=e288]
+                - generic [ref=e291]:
+                  - generic [ref=e292]: 1 – 1 of 1
+                  - button [disabled] [ref=e384]:
+                    - img [ref=e294]
+                  - button [disabled] [ref=e385]:
+                    - img [ref=e299]
+  - dialog "Add Academic Year" [active] [ref=e389]:
+    - generic [ref=e392]:
+      - heading "Add Academic Year" [level=2] [ref=e393]
+      - generic [ref=e396]:
+        - generic [ref=e397]:
+          - generic [ref=e398]: Name
+          - textbox "Name" [ref=e399]
+          - generic [ref=e412]: Name is required.
+        - generic [ref=e400]:
+          - generic [ref=e401]: Start Date
+          - textbox [ref=e402]
+        - generic [ref=e403]:
+          - generic [ref=e404]: End Date
+          - textbox [ref=e405]
+        - generic [ref=e406]:
+          - generic [ref=e407]: Status
+          - combobox "Status" [ref=e408]:
+            - option "Active" [selected]
+            - option "Inactive"
+      - generic [ref=e409]:
+        - link "Cancel" [ref=e410] [cursor=pointer]:
+          - /url: javascript:void(0);
+        - button "Create" [disabled]

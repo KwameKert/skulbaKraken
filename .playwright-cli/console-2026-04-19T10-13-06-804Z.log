@@ -1,0 +1,4 @@
+[     240ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://keycloak.kwamekert.com/realms/skulba-realm/protocol/openid-connect/auth?client_id=skulba-app&redirect_uri=https%3A%2F%2Fskulba.kwamekert.com%2F&state=9abea390-834e-4e64-aa04-6d4060fad628&response_mode=fragment&response_type=code&scope=openid&nonce=2baff489-c366-4a6b-9343-b5d90123e922&code_challenge=ACHLdku73moGLZeI8S9MjBv5XSxj0Qpf52QWxCxnpD4&code_challenge_method=S256:0
+[     301ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://keycloak.kwamekert.com/favicon.ico:0
+[   16900ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://api-skulba.kwamekert.com/billings/api/v1/sms-credits/tenant/kraken/balance:0
+[   16901ms] [ERROR] Error fetching subscription plan: At @ https://skulba.kwamekert.com/chunk-KZ7EMDPB.js:0

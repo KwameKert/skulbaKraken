@@ -1,0 +1,294 @@
+- generic [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - link [ref=e291] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e292]
+        - link [ref=e293] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - generic [ref=e10]: 﫻
+      - generic [ref=e13]:
+        - generic [ref=e14]: "Sms Balance: 0"
+        - combobox [ref=e16]: 
+        - combobox [ref=e18]
+        - link [ref=e294] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - generic [ref=e21]: 
+        - link [ref=e295] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - generic [ref=e24]: 
+        - link [ref=e296] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - generic [ref=e27]: 
+        - link [ref=e297] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - generic [ref=e30]: 
+        - link [ref=e298] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - img [ref=e299]
+      - text: 
+    - generic [ref=e39]:
+      - list [ref=e40]:
+        - listitem [ref=e41]:
+          - link [ref=e300] [cursor=pointer]:
+            - /url: javascript:void(0);
+            - img [ref=e301]
+            - generic [ref=e44]: E2E Test Academy
+      - list [ref=e45]:
+        - listitem [ref=e46]:
+          - heading [level=6] [ref=e302]:
+            - generic [ref=e48]: Main
+          - list [ref=e49]:
+            - listitem [ref=e50]:
+              - link [ref=e303] [cursor=pointer]:
+                - /url: /dashboard
+                - generic [ref=e52]: 
+                - generic [ref=e53]: Dashboard
+        - listitem [ref=e54]:
+          - heading [level=6] [ref=e304]:
+            - generic [ref=e56]: Peoples
+          - list [ref=e57]:
+            - listitem [ref=e58]:
+              - link [ref=e305] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e60]: 
+                - generic [ref=e61]: Students
+        - listitem [ref=e63]:
+          - heading [level=6] [ref=e306]:
+            - generic [ref=e65]: Academics
+          - list [ref=e66]:
+            - listitem [ref=e67]:
+              - link [ref=e307] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e69]: 
+                - generic [ref=e70]: Classes
+            - listitem [ref=e72]:
+              - link [ref=e308] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e74]: 
+                - generic [ref=e75]: Courses
+            - listitem [ref=e77]:
+              - link [ref=e309] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e79]: 
+                - generic [ref=e80]: Terms
+            - listitem [ref=e82]:
+              - link [ref=e310] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e84]: 
+                - generic [ref=e85]: Academic Year
+            - listitem [ref=e87]:
+              - link [ref=e311] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e89]: 
+                - generic [ref=e90]: Grades
+            - listitem [ref=e92]:
+              - link [ref=e312] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e94]: 
+                - generic [ref=e95]: Timetable
+        - listitem [ref=e97]:
+          - heading [level=6] [ref=e313]:
+            - generic [ref=e99]: Staff
+          - list [ref=e100]:
+            - listitem [ref=e101]:
+              - link [ref=e314] [cursor=pointer]:
+                - /url: /peoples/staff/staff-list
+                - generic [ref=e103]: 﨡
+                - generic [ref=e104]: Staff
+        - listitem [ref=e105]:
+          - heading [level=6] [ref=e315]:
+            - generic [ref=e107]: Announcements
+          - list [ref=e108]:
+            - listitem [ref=e109]:
+              - link [ref=e316] [cursor=pointer]:
+                - /url: /announcements/list
+                - generic [ref=e111]: 
+                - generic [ref=e112]: Announcements
+        - listitem [ref=e113]:
+          - heading [level=6] [ref=e317]:
+            - generic [ref=e115]: Attendance
+          - list [ref=e116]:
+            - listitem [ref=e117]:
+              - link [ref=e318] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e119]: 
+                - generic [ref=e120]: Attendance
+        - listitem [ref=e122]:
+          - heading [level=6] [ref=e319]:
+            - generic [ref=e124]: Finance
+          - list [ref=e125]:
+            - listitem [ref=e126]:
+              - link [ref=e320] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e128]: 
+                - generic [ref=e129]: Fees Collection
+            - listitem [ref=e131]:
+              - link [ref=e321] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e133]: 
+                - generic [ref=e134]: Accounting
+            - listitem [ref=e136]:
+              - link [ref=e322] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e138]: 
+                - generic [ref=e139]: Billings
+            - listitem [ref=e141]:
+              - link [ref=e323] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e143]: 
+                - generic [ref=e144]: Budgets
+            - listitem [ref=e146]:
+              - link [ref=e324] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e148]: 
+                - generic [ref=e149]: Approvals
+            - listitem [ref=e151]:
+              - link [ref=e325] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e153]: 
+                - generic [ref=e154]: Payroll
+        - listitem [ref=e156]:
+          - heading [level=6] [ref=e326]:
+            - generic [ref=e158]: Reports
+          - list [ref=e159]:
+            - listitem [ref=e160]:
+              - link [ref=e327] [cursor=pointer]:
+                - /url: /reports/fees-report
+                - generic [ref=e162]: 
+                - generic [ref=e163]: Fee Report
+        - listitem [ref=e164]:
+          - heading [level=6] [ref=e328]:
+            - generic [ref=e166]: Settings
+          - list [ref=e167]:
+            - listitem [ref=e168]:
+              - link [ref=e329] [cursor=pointer]:
+                - /url: javascript:void(0)
+                - generic [ref=e170]: ﮎ
+                - generic [ref=e171]: Academic Settings
+        - listitem [ref=e173]:
+          - heading [level=6] [ref=e330]:
+            - generic [ref=e175]: Audit
+          - list [ref=e176]:
+            - listitem [ref=e177]:
+              - link [ref=e331] [cursor=pointer]:
+                - /url: /audit/logs
+                - generic [ref=e179]: 
+                - generic [ref=e180]: Audit
+    - generic [ref=e190]:
+      - generic [ref=e191]:
+        - generic [ref=e192]:
+          - heading [level=3] [ref=e332]: Classes
+          - navigation [ref=e194]:
+            - list [ref=e195]:
+              - listitem [ref=e196]:
+                - link [ref=e333] [cursor=pointer]:
+                  - /url: /dashboard
+                  - text: Dashboard
+              - listitem [ref=e198]:
+                - text: /
+                - link [ref=e334] [cursor=pointer]:
+                  - /url: javascript:void(0);
+                  - text: Classes
+              - listitem [ref=e200]: / All Classes
+        - generic [ref=e201]:
+          - generic [ref=e202]:
+            - link [ref=e335] [cursor=pointer]:
+              - /url: javascript:void(0);
+              - generic [ref=e204]: 
+            - link [ref=e336] [cursor=pointer]:
+              - /url: javascript:void(0);
+              - generic [ref=e206]: 
+          - link [ref=e337] [cursor=pointer]:
+            - /url: javascript:void(0);
+            - generic [ref=e209]: 
+            - text: Add Class
+      - generic [ref=e210]:
+        - generic [ref=e211]:
+          - heading [level=4] [ref=e338]: Classes List
+          - link [ref=e339] [cursor=pointer]:
+            - /url: javascript:void(0);
+            - generic [ref=e216]: 
+            - text: Filter 
+        - generic [ref=e217]:
+          - searchbox [ref=e224]
+          - generic [ref=e225]:
+            - table [ref=e226]:
+              - rowgroup [ref=e227]:
+                - row [ref=e340]:
+                  - columnheader [ref=e341]:
+                    - button [ref=e342] [cursor=pointer]:
+                      - generic [ref=e231]: ID
+                      - generic [ref=e232]:
+                        - text: 
+                        - img [ref=e233]
+                        - text: 
+                  - columnheader [ref=e343]:
+                    - button [ref=e344] [cursor=pointer]:
+                      - generic [ref=e237]: Name
+                      - generic [ref=e238]:
+                        - text: 
+                        - img [ref=e239]
+                        - text: 
+                  - columnheader [ref=e345]:
+                    - button [ref=e346] [cursor=pointer]:
+                      - generic [ref=e243]: Status
+                      - generic [ref=e244]:
+                        - text: 
+                        - img [ref=e245]
+                        - text: 
+                  - columnheader [ref=e347]:
+                    - button [ref=e348] [cursor=pointer]:
+                      - generic [ref=e249]: Created At
+                      - generic [ref=e250]:
+                        - text: 
+                        - img [ref=e251]
+                        - text: 
+                  - columnheader [ref=e349]:
+                    - button [ref=e350] [cursor=pointer]:
+                      - generic [ref=e255]: Updated At
+                      - generic [ref=e256]:
+                        - text: 
+                        - img [ref=e257]
+                        - text: 
+                  - columnheader [ref=e351]: Action
+            - group [ref=e260]:
+              - generic [ref=e262]:
+                - generic [ref=e263]:
+                  - generic [ref=e264]: "Items per page:"
+                  - combobox [ref=e352] [cursor=pointer]:
+                    - generic [ref=e270]:
+                      - generic [ref=e272]: "10"
+                      - img [ref=e275]
+                - generic [ref=e278]:
+                  - generic [ref=e279]: 0 of 0
+                  - button [disabled] [ref=e353]:
+                    - img [ref=e281]
+                  - button [disabled] [ref=e354]:
+                    - img [ref=e286]
+  - dialog "Add Class" [active] [ref=e358]:
+    - generic [ref=e361]:
+      - heading "Add Class" [level=2] [ref=e362]
+      - generic [ref=e365]:
+        - generic [ref=e366]:
+          - generic [ref=e367]: Name *
+          - textbox "Name *" [ref=e368]
+          - generic [ref=e386]: Name is required.
+        - generic [ref=e369]:
+          - generic [ref=e370]: Techer
+          - generic [ref=e371]:
+            - combobox [ref=e374]
+            - status [ref=e376]
+        - generic [ref=e377]:
+          - generic [ref=e378]: Description
+          - textbox "Techer Description" [ref=e379]
+        - generic [ref=e380]:
+          - generic [ref=e381]: Status *
+          - combobox "Status *" [ref=e382]:
+            - option "Active"
+            - option "Inactive"
+      - generic [ref=e383]:
+        - link "Cancel" [ref=e384] [cursor=pointer]:
+          - /url: javascript:void(0);
+        - button "Create" [disabled]

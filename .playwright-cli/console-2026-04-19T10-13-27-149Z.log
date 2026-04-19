@@ -1,0 +1,2 @@
+[     390ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://api-skulba.kwamekert.com/billings/api/v1/sms-credits/tenant/kraken/balance:0
+[     393ms] [ERROR] Error fetching subscription plan: At @ https://skulba.kwamekert.com/chunk-KZ7EMDPB.js:0

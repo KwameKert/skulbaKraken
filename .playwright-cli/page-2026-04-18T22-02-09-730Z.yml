@@ -1,0 +1,19 @@
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - img "Logo" [ref=e7]
+    - heading "Sign in to your account" [level=1] [ref=e8]
+  - generic [ref=e9]:
+    - generic [ref=e10]:
+      - generic [ref=e11]:
+        - generic [ref=e12]: Username or email
+        - textbox "Username or email" [active] [ref=e13]
+      - generic [ref=e14]:
+        - generic [ref=e15]: Password
+        - generic [ref=e16]:
+          - textbox "Password" [ref=e17]
+          - button [ref=e18] [cursor=pointer]:
+            - img [ref=e20]
+      - link "Forgot Password?" [ref=e24] [cursor=pointer]:
+        - /url: /realms/skulba-realm/login-actions/reset-credentials?client_id=skulba-app&tab_id=qGtvmVSDm-Q&client_data=eyJydSI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMC9sb2dpbiIsInJ0IjoiY29kZSIsInJtIjoiZnJhZ21lbnQiLCJzdCI6IjEzMTg0ZmNjLTczNjgtNDhlYS04NDg1LWEzNWE1NDYzNWMwNyJ9
+      - button "Sign In" [ref=e26] [cursor=pointer]
+    - generic [ref=e27]: Or sign in with

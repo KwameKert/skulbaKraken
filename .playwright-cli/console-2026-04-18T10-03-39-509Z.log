@@ -1,0 +1,12 @@
+[     295ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/kwamekert/Documents/Projects/KwameConsults/eduHubMS/.angular/cache/19.1.8/skulba-app/vite/deps/chunk-Z6AEJ5AN.js?v=f248d6d1:14882
+[     306ms] [ERROR] Access to script at 'https://embed.tawk.to/69b6d60289dbc51c38ca3823/1jjp37v9q' from origin 'http://localhost:4200' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:4200/academic/academic-years:0
+[     306ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://embed.tawk.to/69b6d60289dbc51c38ca3823/1jjp37v9q:0
+[     422ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ http://localhost:8080/users/api/v1/settings?module=academic&key=schoolInfo:0
+[     423ms] [ERROR] Error fetching settings: HttpErrorResponse @ http://localhost:4200/chunk-IC7SHMRV.js:2184
+[     429ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ http://localhost:8080/academics/api/v1/terms/active:0
+[     430ms] [ERROR] Error loading active term: HttpErrorResponse @ http://localhost:4200/chunk-IC7SHMRV.js:756
+[     467ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ http://localhost:8080/billings/api/v1/sms-credits/tenant/kraken/balance:0
+[     468ms] [ERROR] Error fetching subscription plan: HttpErrorResponse @ http://localhost:4200/chunk-IC7SHMRV.js:712
+[     495ms] [WARNING] NG0913: An image with src http://localhost:4200/assets/img/logo-small.png has intrinsic file dimensions much larger than its rendered size. This can negatively impact application loading performance. For more information about addressing or disabling this warning, see https://angular.dev/errors/NG0913. Find more at https://angular.dev/errors/NG0913 @ http://localhost:4200/@fs/Users/kwamekert/Documents/Projects/KwameConsults/eduHubMS/.angular/cache/19.1.8/skulba-app/vite/deps/chunk-Z6AEJ5AN.js?v=f248d6d1:22906
+[   70891ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_TIMED_OUT @ https://dummy.com/array/dummy/config.js:0
+[   70908ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_TIMED_OUT @ https://dummy.com/array/dummy/config?ip=0&_=1776506690401&ver=1.367.0:0
