@@ -27,7 +27,8 @@ jobs:
         INVALID_TEST_USER_PASSWORD: ${{ secrets.INVALID_TEST_USER_PASSWORD }}
         LOGIN_SUCCESS_PATTERN: ${{ secrets.LOGIN_SUCCESS_PATTERN }}
       run: npx playwright test
-    - uses: actions/upload-artifact@v4
+    - name: Upload report
+      uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
         name: playwright-report
