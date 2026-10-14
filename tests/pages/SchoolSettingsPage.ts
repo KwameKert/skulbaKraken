@@ -86,16 +86,4 @@ export class SchoolSettingsPage extends BasePage {
         await locator.clear();
         await locator.fill(value);
     }
-
-    private async clickIfVisible(locator: Locator): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) return false;
-            const target = locator.first();
-            if (!(await target.isVisible())) return false;
-            await target.click();
-            return true;
-        } catch {
-            return false;
-        }
-    }
 }

@@ -186,37 +186,4 @@ export class ClassPage extends BasePage {
         await locator.clear();
         await locator.fill(value);
     }
-
-    private async fillIfVisible(locator: Locator, value: string): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) return false;
-            const target = locator.first();
-            if (!(await target.isVisible())) return false;
-            await target.fill(value);
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
-    private async clickIfVisible(locator: Locator): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) return false;
-            const target = locator.first();
-            if (!(await target.isVisible())) return false;
-            await target.click();
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
-    private async isVisible(locator: Locator): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) return false;
-            return await locator.first().isVisible();
-        } catch {
-            return false;
-        }
-    }
 }

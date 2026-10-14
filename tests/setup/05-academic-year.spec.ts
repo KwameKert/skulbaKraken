@@ -202,7 +202,6 @@ test.describe.serial('Academic Year', () => {
             await academicYearPage.expectListVisible();
             await academicYearPage.waitForTableToHaveRows();
             const rowsBefore = await academicYearPage.getTableRowCount();
-            // await page.waitForTimeout(1000); // wait for any pending operations to settle before counting
             await academicYearPage.clickDeleteInRow(yearToDelete);
             await academicYearPage.cancelSwalDelete();
 
@@ -239,7 +238,10 @@ test.describe.serial('Academic Year', () => {
             await academicYearPage.submitForm();
 
             await academicYearPage.waitForLoadingBar();
-            await academicYearPage.waitForTableToHaveRows();
+            // The table already has other rows, so wait for the new one before counting.
+            await expect(
+                page.locator('table.datatable tbody tr').filter({ hasText: deleteYear.name })
+            ).toBeVisible();
             const rowsBefore = await academicYearPage.getTableRowCount();
 
             await academicYearPage.clickDeleteInRow(deleteYear.name);
@@ -255,10 +257,10 @@ test.describe.serial('Academic Year', () => {
 
             await academicYearPage.expectToastMessage(/deleted successfully/i);
 
-            // await expect.poll(
-            //     async () => academicYearPage.getTableRowCount(),
-            //     { message: 'Expected row count to decrease by 1 after delete.' }
-            // ).toBe(rowsBefore - 1);
+            await expect.poll(
+                async () => academicYearPage.getTableRowCount(),
+                { message: 'Expected row count to decrease by 1 after delete.' }
+            ).toBe(rowsBefore - 1);
         });
     });
 });

@@ -13,8 +13,8 @@ const validTerm: TermFormData = {
 const secondTerm: TermFormData = {
     name: 'Second Term',
     academicYearName: '2025/2026 Academic Year',
-    startDate: '2024-09-01',
-    endDate: '2024-12-20',
+    startDate: '2026-01-05',
+    endDate: '2026-04-10',
     status: 'INACTIVE',
     description: 'E2E test term',
 };
@@ -27,7 +27,7 @@ test.describe('Terms', () => {
 
             await termPage.expectColumnHeaders([
                 'ID', 'Academic Year', 'Name', 'Is Locked', 'Is Published',
-                'Rollover Status', 'Status', 'Start Date', 'End Date', 'Action'
+                'Rollover Status', 'Status', 'Start Date', 'Action'
             ]);
         });
 
@@ -106,7 +106,7 @@ test.describe('Terms', () => {
             await expect(page.getByRole('dialog')).not.toBeVisible();
         });
 
-        test('Lock Term and Publish Term checkboxes are unchecked by default', async ({ page }) => {
+        test('Lock Term and Promotional Term switches are unchecked by default', async ({ page }) => {
             const termPage = new TermPage(page);
             await termPage.visit();
 
@@ -114,7 +114,7 @@ test.describe('Terms', () => {
             await termPage.expectDialogVisible('Add');
 
             await expect(page.locator('input#isLocked')).not.toBeChecked();
-            await expect(page.locator('input#isPublished')).not.toBeChecked();
+            await expect(page.locator('input#isPromotionalTerm')).not.toBeChecked();
         });
     });
 
@@ -250,14 +250,19 @@ test.describe('Terms', () => {
             await termPage.fillForm(secondTerm);
             await termPage.submitForm();
 
-
+            // The table already has other rows, so wait for the new one before counting.
+            await expect(
+                page.locator('table.datatable tbody tr').filter({ hasText: secondTerm.name })
+            ).toBeVisible();
             const rowsBefore = await termPage.getTableRowCount();
             await termPage.clickDeleteInRow(secondTerm.name);
             await termPage.confirmSwalDelete();
 
             await termPage.expectToastMessage(/deleted successfully/i);
-            const rowsAfter = await termPage.getTableRowCount();
-            expect(rowsAfter).toBe(1);
+            await expect.poll(
+                async () => termPage.getTableRowCount(),
+                { message: 'Expected row count to decrease by 1 after delete.' }
+            ).toBe(rowsBefore - 1);
         });
     });
 });

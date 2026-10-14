@@ -13,7 +13,6 @@ export class LoginPage extends BasePage {
     async login(email: string, password: string): Promise<void> {
         await this.fillEmail(email);
         await this.fillPassword(password);
-        // await this.page.waitForTimeout(100000);
         await this.submit();
     }
 
@@ -80,53 +79,5 @@ export class LoginPage extends BasePage {
         }
 
         throw new Error(`Could not find a visible ${fieldName} input.`);
-    }
-
-    private async fillIfVisible(locator: Locator, value: string): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) {
-                return false;
-            }
-
-            const target = locator.first();
-            if (!(await target.isVisible())) {
-                return false;
-            }
-
-            await target.fill(value);
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
-    private async clickIfVisible(locator: Locator): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) {
-                return false;
-            }
-
-            const target = locator.first();
-            if (!(await target.isVisible())) {
-                return false;
-            }
-
-            await target.click();
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
-    private async isVisible(locator: Locator): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) {
-                return false;
-            }
-
-            return await locator.first().isVisible();
-        } catch {
-            return false;
-        }
     }
 }

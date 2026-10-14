@@ -13,7 +13,7 @@ export class GradeSettingsPage extends BasePage {
     }
 
     async visit(): Promise<void> {
-        await this.goto('/settings/academic/grade');
+        await this.goto('/academic/grades/settings');
     }
 
     async expectFormVisible(): Promise<void> {
@@ -81,17 +81,5 @@ export class GradeSettingsPage extends BasePage {
         const locator = this.page.locator(`input[formcontrolname="${formControlName}"]`).first();
         await locator.clear();
         await locator.fill(value);
-    }
-
-    private async clickIfVisible(locator: Locator): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) return false;
-            const target = locator.first();
-            if (!(await target.isVisible())) return false;
-            await target.click();
-            return true;
-        } catch {
-            return false;
-        }
     }
 }

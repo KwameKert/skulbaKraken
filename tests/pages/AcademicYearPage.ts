@@ -59,14 +59,6 @@ export class AcademicYearPage extends BasePage {
     }
 
 
-    getDialogError() {
-        return this.page.locator('mat-dialog-content .alert.alert-danger');
-    }
-
-    getAcademicYearDialog() {
-        return this.page.locator('app-manage-academic-year');
-    }
-
     async fillForm(data: AcademicYearFormData): Promise<void> {
         await this.fillField('input[formcontrolname="name"]', data.name);
         await this.fillField('input[formcontrolname="startDate"]', data.startDate);
@@ -182,38 +174,5 @@ export class AcademicYearPage extends BasePage {
         const locator = this.page.locator(selector).first();
         await locator.clear();
         await locator.fill(value);
-    }
-
-    private async fillIfVisible(locator: Locator, value: string): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) return false;
-            const target = locator.first();
-            if (!(await target.isVisible())) return false;
-            await target.fill(value);
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
-    private async clickIfVisible(locator: Locator): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) return false;
-            const target = locator.first();
-            if (!(await target.isVisible())) return false;
-            await target.click();
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
-    private async isVisible(locator: Locator): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) return false;
-            return await locator.first().isVisible();
-        } catch {
-            return false;
-        }
     }
 }

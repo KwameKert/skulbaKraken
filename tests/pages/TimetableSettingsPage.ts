@@ -74,25 +74,6 @@ export class TimetableSettingsPage extends BasePage {
         await input.press('Tab');
     }
 
-    // async addBreak(data: BreakData): Promise<void> {
-    //     const addBreakBtn = this.page
-    //         .locator('[formarrayname="breaks"]')
-    //         .getByRole('button', { name: /add break/i });
-    //     await addBreakBtn.click();
-
-    //     const breakRows = this.page.locator('[formarrayname="breaks"] > div');
-    //     const lastRow = breakRows.last();
-
-    //     const startInput = lastRow.locator('p-calendar').nth(0).locator('input');
-    //     await startInput.fill(data.startTime);
-    //     await startInput.press('Tab');
-
-    //     const endInput = lastRow.locator('p-calendar').nth(1).locator('input');
-    //     await endInput.fill(data.endTime);
-    //     await endInput.press('Tab');
-    // }
-
-
     async addBreak(data: BreakData): Promise<void> {
         const addBreakBtn = this.page
             .locator('[formarrayname="breaks"]')
@@ -192,17 +173,5 @@ export class TimetableSettingsPage extends BasePage {
         const locator = this.page.locator(`input[formcontrolname="${formControlName}"]`).first();
         await locator.clear();
         await locator.fill(value);
-    }
-
-    private async clickIfVisible(locator: Locator): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) return false;
-            const target = locator.first();
-            if (!(await target.isVisible())) return false;
-            await target.click();
-            return true;
-        } catch {
-            return false;
-        }
     }
 }

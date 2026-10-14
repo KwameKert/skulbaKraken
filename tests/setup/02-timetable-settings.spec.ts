@@ -1,7 +1,10 @@
 import { authenticatedTest as test, expect } from '../fixtures';
 import { TimetableSettingsPage } from '../pages/TimetableSettingsPage';
 
-test.describe('Timetable Settings', () => {
+// TODO: skipped — /settings/academic/time-table was removed from the app and replaced by
+// timetable templates (/timetable/templates). Rewrite TimetableSettingsPage and this spec
+// against ManageTimetableTemplateComponent, then remove .skip.
+test.describe.skip('Timetable Settings', () => {
     test.describe('Page load', () => {
         test('loads the timetable settings form', async ({ page }) => {
             const timetablePage = new TimetableSettingsPage(page);

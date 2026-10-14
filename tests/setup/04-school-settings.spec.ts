@@ -91,7 +91,16 @@ test.describe('School Settings', () => {
             await schoolPage.expectFormVisible();
 
             await schoolPage.fillForm(validData);
-            await schoolPage.submitForm();
+
+            // The component reloads the page right after saving, so the toast
+            // never stays visible. Assert on the save request instead.
+            const [response] = await Promise.all([
+                page.waitForResponse(res =>
+                    res.url().includes('/settings') && res.request().method() === 'POST'
+                ),
+                schoolPage.submitForm(),
+            ]);
+            expect(response.ok()).toBeTruthy();
         });
 
         test('save button is enabled when required fields are filled', async ({ page }) => {

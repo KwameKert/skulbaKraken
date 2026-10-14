@@ -8,7 +8,9 @@ export interface TermFormData {
     endDate: string;          // YYYY-MM-DD
     status?: 'ACTIVE' | 'INACTIVE';
     isLocked?: boolean;
-    isPublished?: boolean;
+    isPromotionalTerm?: boolean;
+    vacationDate?: string;    // YYYY-MM-DD
+    resumptionDate?: string;  // YYYY-MM-DD
     description?: string;
 }
 
@@ -63,14 +65,6 @@ export class TermPage extends BasePage {
         await this.page.getByRole('heading', { name: heading }).waitFor({ state: 'visible' });
     }
 
-    getDialogError() {
-        return this.page.locator('mat-dialog-content .alert.alert-danger');
-    }
-
-    getTermDialog() {
-        return this.page.locator('app-manage-term');
-    }
-
     async fillForm(data: TermFormData): Promise<void> {
         await this.fillField('input[formcontrolname="name"]', data.name);
         await this.selectAcademicYear(data.academicYearName);
@@ -83,10 +77,18 @@ export class TermPage extends BasePage {
             if (data.isLocked !== checked) await checkbox.click();
         }
 
-        if (data.isPublished !== undefined) {
-            const checkbox = this.page.locator('input#isPublished[formcontrolname="isPublished"]');
+        if (data.isPromotionalTerm !== undefined) {
+            const checkbox = this.page.locator('input#isPromotionalTerm[formcontrolname="isPromotionalTerm"]');
             const checked = await checkbox.isChecked();
-            if (data.isPublished !== checked) await checkbox.click();
+            if (data.isPromotionalTerm !== checked) await checkbox.click();
+        }
+
+        if (data.vacationDate) {
+            await this.fillField('input[formcontrolname="vacationDate"]', data.vacationDate);
+        }
+
+        if (data.resumptionDate) {
+            await this.fillField('input[formcontrolname="resumptionDate"]', data.resumptionDate);
         }
 
         if (data.description) {
@@ -218,38 +220,5 @@ export class TermPage extends BasePage {
         const locator = this.page.locator(selector).first();
         await locator.clear();
         await locator.fill(value);
-    }
-
-    private async fillIfVisible(locator: Locator, value: string): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) return false;
-            const target = locator.first();
-            if (!(await target.isVisible())) return false;
-            await target.fill(value);
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
-    private async clickIfVisible(locator: Locator): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) return false;
-            const target = locator.first();
-            if (!(await target.isVisible())) return false;
-            await target.click();
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
-    private async isVisible(locator: Locator): Promise<boolean> {
-        try {
-            if ((await locator.count()) === 0) return false;
-            return await locator.first().isVisible();
-        } catch {
-            return false;
-        }
     }
 }
