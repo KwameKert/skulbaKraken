@@ -1,18 +1,17 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export interface StaffFormData {
-    employeeType: 'Teacher' | 'Admin' | 'Accountant' | 'Staff';
+    employeeType: 'Teacher' | 'Head Teacher' | 'Admin' | 'Accountant' | 'Staff';
     firstName: string;
     lastName: string;
     gender: 'Male' | 'Female';
     primaryContactNumber: string;
     email: string;
-    dateOfJoining: string; // 'MM/DD/YYYY'
-    dateOfBirth: string;   // 'MM/DD/YYYY'
+    dateOfJoining: string; // MM/DD/YYYY
+    dateOfBirth: string;   // MM/DD/YYYY
     maritalStatus?: 'Single' | 'Married';
     languages?: string[];
-    qualification?: string;
     workExperience?: string;
     emergencyContactName: string;
     emergencyContactNumber: string;
@@ -21,36 +20,34 @@ export interface StaffFormData {
     notes?: string;
 }
 
+const ID = 'app-add-employee';
+
 export class StaffPage extends BasePage {
     constructor(page: Page) {
         super(page);
     }
 
+    // ── Navigation ──────────────────────────────────────────────────────────
+
     async visit(): Promise<void> {
         await this.goto('/peoples/staff/staff-list');
-        await Promise.race([
-            this.page.locator('a[href="/peoples/staff/add-staff"]').waitFor({ state: 'visible' }),
-            this.page.locator('input[type="password"], input[name="password"]').waitFor({ state: 'visible' }),
-        ]);
+        await this.expectListVisible();
     }
 
     async visitAddForm(): Promise<void> {
         await this.goto('/peoples/staff/add-staff');
+        await this.expectFormVisible();
     }
 
     async visitEditForm(id: number | string): Promise<void> {
         await this.goto(`/peoples/staff/edit-staff/${id}`);
+        await this.expectFormVisible();
     }
 
+    // ── List view ───────────────────────────────────────────────────────────
+
     async expectListVisible(): Promise<void> {
-        const candidates = [
-            this.page.getByRole('table'),
-            this.page.locator('table.datatable'),
-            this.page.locator('.custom-datatable-filter'),
-        ];
-        for (const locator of candidates) {
-            if (await this.isVisible(locator)) return;
-        }
+        await this.page.locator('table.datatable').waitFor({ state: 'visible' });
     }
 
     async expectColumnHeaders(headers: string[]): Promise<void> {
@@ -64,107 +61,137 @@ export class StaffPage extends BasePage {
         return this.page.locator('table.datatable tbody tr').count();
     }
 
-    async waitForRows(): Promise<number> {
-        await expect.poll(
-            async () => this.page.locator('table.datatable tbody tr').count(),
-            { message: 'Waiting for table rows to load.', timeout: 15000 }
-        ).toBeGreaterThan(0);
-        return this.page.locator('table.datatable tbody tr').count();
+    async clickAddStaff(): Promise<void> {
+        await this.page.getByRole('link', { name: /add staff/i }).first().click();
     }
 
     async search(term: string): Promise<void> {
-        await this.page.locator('#employee-list-table-filter').click();
-
-        const searchInput = this.page.locator('#employee-list-name-filter');
-
-        await this.fillIfVisible(searchInput, term);
+        const input = this.page.locator('#DataTables_Table_0_filter input[type="search"]');
+        await input.waitFor({ state: 'visible' });
+        await input.fill(term);
     }
 
-
+    async filterByName(term: string): Promise<void> {
+        await this.page.locator('#employee-list-table-filter').click();
+        await this.page.locator('#employee-list-name-filter').fill(term);
+        await this.page.getByRole('button', { name: /apply/i }).click();
+    }
 
     async clickResetFilters(): Promise<void> {
-        await this.page.locator("#employee-list-table-filter-reset").click();
+        await this.page.locator('#employee-list-table-filter-reset').click();
     }
 
-    async clickAddStaff(): Promise<void> {
-        const btn = this.page.locator('a[href="/peoples/staff/add-staff"]');
-        await btn.waitFor({ state: 'visible' });
-        await btn.click();
+    rowByName(name: string): Locator {
+        return this.page.locator('table.datatable tbody tr').filter({ hasText: name });
     }
 
-    async openRowActions(nameOrId: string): Promise<void> {
-        const row = this.page.locator('tr').filter({ hasText: nameOrId });
-        const menuBtn = row.locator('[data-bs-toggle="dropdown"], .ti-dots-vertical').first();
-        await menuBtn.click();
+    async openRowActions(name: string): Promise<void> {
+        await this.rowByName(name).locator('.ti-dots-vertical').first().click();
     }
 
-    async clickViewInRow(nameOrId: string): Promise<void> {
-        await this.openRowActions(nameOrId);
-        const option = this.page.getByRole('link', { name: /view/i }).first();
-        await option.click();
+    private async clickRowAction(name: string, action: RegExp): Promise<void> {
+        await this.openRowActions(name);
+        await this.rowByName(name).locator('.dropdown-item').filter({ hasText: action }).first().click();
     }
 
-    async clickEditInRow(nameOrId: string): Promise<void> {
-        await this.openRowActions(nameOrId);
-        const option = this.page.getByText(/^Edit$/i).last();
-        await option.waitFor({ state: 'visible' });
-        await option.click();
-        await this.page.locator('#loading-bar').waitFor({ state: 'hidden' });
+    async clickViewInRow(name: string): Promise<void> {
+        await this.clickRowAction(name, /view/i);
     }
 
-    async clickDeleteInRow(nameOrId: string): Promise<void> {
-        await this.openRowActions(nameOrId);
-        const candidates = [
-            this.page.getByRole('link', { name: /delete/i }).first(),
-            this.page.locator('.dropdown-item').filter({ hasText: /delete/i }).first(),
-        ];
-        for (const locator of candidates) {
-            if (await this.clickIfVisible(locator)) return;
-        }
-        throw new Error('Could not find Delete option in row actions.');
+    async clickEditInRow(name: string): Promise<void> {
+        await this.clickRowAction(name, /^\s*edit\s*$/i);
+    }
+
+    async clickResetPasswordInRow(name: string): Promise<void> {
+        await this.clickRowAction(name, /reset password/i);
+    }
+
+    async clickDeleteInRow(name: string): Promise<void> {
+        await this.clickRowAction(name, /delete/i);
+    }
+
+    async confirmSwal(): Promise<void> {
+        const confirmBtn = this.page.locator('.swal2-confirm');
+        await confirmBtn.waitFor({ state: 'visible' });
+        await confirmBtn.click();
+        await this.page.locator('.swal2-popup').waitFor({ state: 'hidden' });
+    }
+
+    async cancelSwal(): Promise<void> {
+        const cancelBtn = this.page.locator('.swal2-cancel');
+        await cancelBtn.waitFor({ state: 'visible' });
+        await cancelBtn.click();
+        await this.page.locator('.swal2-popup').waitFor({ state: 'hidden' });
+    }
+
+    // ── Staff form ──────────────────────────────────────────────────────────
+
+    async expectFormVisible(): Promise<void> {
+        await this.page.locator(`#${ID}-first-name`).waitFor({ state: 'visible' });
     }
 
     async fillStaffForm(data: StaffFormData): Promise<void> {
-        await this.selectPrimeDropdownById('app-add-employee-employee-type', data.employeeType);
-        await this.page.locator('#app-add-employee-first-name').fill(data.firstName);
-        await this.page.locator('#app-add-employee-last-name').fill(data.lastName);
-        await this.selectPrimeDropdownById('app-add-employee-gender', data.gender);
-        await this.page.locator('#app-add-employee-primary-contact-number').fill(data.primaryContactNumber);
-        await this.page.locator('#app-add-employee-email').fill(data.email);
-        await this.fillBsDateById('app-add-employee-date-of-joining', data.dateOfJoining);
-        await this.fillBsDateById('app-add-employee-date-of-birth', data.dateOfBirth);
+        await this.selectDropdown(`${ID}-employee-type`, data.employeeType);
+        await this.fillById('first-name', data.firstName);
+        await this.fillById('last-name', data.lastName);
+        await this.selectDropdown(`${ID}-gender`, data.gender);
+        await this.fillById('primary-contact-number', data.primaryContactNumber);
+        await this.fillById('email', data.email);
+        await this.fillDate(`${ID}-date-of-joining`, data.dateOfJoining);
+        await this.fillDate(`${ID}-date-of-birth`, data.dateOfBirth);
 
         if (data.maritalStatus) {
-            await this.selectPrimeDropdownById('app-add-employee-marital-status', data.maritalStatus);
-        }
-        if (data.languages && data.languages.length > 0) {
-            for (const lang of data.languages) {
-                await this.addLanguageChip(lang);
-            }
-        }
-        // if (data.qualification) {
-        //     await this.page.locator('#app-add-employee-qualification').fill(data.qualification);
-        // }
-        if (data.workExperience) {
-            await this.page.locator('#app-add-employee-work-experience').fill(data.workExperience);
+            await this.selectDropdown(`${ID}-marital-status`, data.maritalStatus);
         }
 
-        await this.page.locator('#app-add-employee-emergency-contact-name').fill(data.emergencyContactName);
-        await this.page.locator('#app-add-employee-emergency-contact-number').fill(data.emergencyContactNumber);
+        for (const language of data.languages ?? []) {
+            await this.addLanguageChip(language);
+        }
+
+        if (data.workExperience) {
+            await this.fillById('work-experience', data.workExperience);
+        }
+
+        await this.fillById('emergency-contact-name', data.emergencyContactName);
+        await this.fillById('emergency-contact-number', data.emergencyContactNumber);
 
         if (data.address) {
-            await this.page.locator('#app-add-employee-address').fill(data.address);
+            await this.fillById('address', data.address);
         }
 
-        await this.selectPrimeDropdownById('app-add-employee-status', data.status);
+        await this.selectDropdown(`${ID}-status`, data.status);
 
         if (data.notes) {
-            await this.page.locator('#app-add-employee-notes').fill(data.notes);
+            await this.fillById('notes', data.notes);
         }
     }
 
+    async fillById(name: string, value: string): Promise<void> {
+        const input = this.page.locator(`#${ID}-${name}`);
+        await input.clear();
+        await input.fill(value);
+    }
+
+    async touchField(name: string): Promise<void> {
+        await this.page.locator(`#${ID}-${name}`).click();
+        await this.page.getByRole('heading', { name: /staff/i }).first().click();
+    }
+
     async submitForm(): Promise<void> {
-        await this.page.locator('#app-add-employee-submit-button').click();
+        await this.page.locator(`#${ID}-submit-button`).click();
+    }
+
+    async cancelForm(): Promise<void> {
+        await this.page.locator(`#${ID}-cancel-button`).click();
+    }
+
+    async isSubmitDisabled(): Promise<boolean> {
+        return this.page.locator(`#${ID}-submit-button`).isDisabled();
+    }
+
+    async expectFieldError(message: RegExp | string): Promise<void> {
+        const error = this.page.locator('.text-danger').filter({ hasText: message });
+        await error.first().waitFor({ state: 'visible', timeout: 5000 });
     }
 
     async expectToastMessage(text: RegExp | string): Promise<void> {
@@ -172,27 +199,17 @@ export class StaffPage extends BasePage {
         await toast.first().waitFor({ state: 'visible', timeout: 10000 });
     }
 
-    async confirmSwalDelete(): Promise<void> {
-        const confirmBtn = this.page.locator('.swal2-confirm, button.btn-success').filter({ hasText: /yes.*delete/i });
-        await confirmBtn.waitFor({ state: 'visible' });
-        await confirmBtn.click();
-    }
+    // ── Private helpers ─────────────────────────────────────────────────────
 
-    async cancelSwalDelete(): Promise<void> {
-        const cancelBtn = this.page.locator('.swal2-cancel, button.btn-danger').filter({ hasText: /cancel/i });
-        await cancelBtn.waitFor({ state: 'visible' });
-        await cancelBtn.click();
-    }
-
-    private async fillBsDateById(id: string, value: string): Promise<void> {
+    private async fillDate(id: string, value: string): Promise<void> {
         const input = this.page.locator(`#${id}`);
         await input.click();
         await this.page.keyboard.press('Escape');
         await input.fill(value);
-        await this.page.keyboard.press('Tab');
+        await input.press('Tab');
     }
 
-    private async selectPrimeDropdownById(id: string, optionLabel: string): Promise<void> {
+    private async selectDropdown(id: string, optionLabel: string): Promise<void> {
         await this.page.locator(`#${id}`).click();
         const option = this.page.locator('.p-dropdown-item').filter({ hasText: optionLabel }).first();
         await option.waitFor({ state: 'visible' });
@@ -200,10 +217,9 @@ export class StaffPage extends BasePage {
     }
 
     private async addLanguageChip(language: string): Promise<void> {
-        const chipsHost = this.page.locator('#app-add-employee-languages');
-        await chipsHost.click();
-        const chipsInput = this.page.locator('#app-add-employee-languages input').first();
+        const chipsInput = this.page.locator(`#${ID}-languages input`).first();
+        await chipsInput.click();
         await chipsInput.fill(language);
-        await this.page.keyboard.press('Enter');
+        await chipsInput.press('Enter');
     }
 }

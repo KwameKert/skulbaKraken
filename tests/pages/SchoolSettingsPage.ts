@@ -15,7 +15,7 @@ export class SchoolSettingsPage extends BasePage {
     }
 
     async visit(): Promise<void> {
-        await this.goto('/settings/academic/school');
+        await this.gotoAndWaitForSettings('/settings/academic/school', 'key=schoolInfo');
     }
 
     async expectFormVisible(): Promise<void> {

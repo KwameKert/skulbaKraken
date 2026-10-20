@@ -11,6 +11,20 @@ export class BasePage {
         await this.page.goto(pathname);
     }
 
+    /**
+     * Settings pages patch the form with saved values once the settings GET returns.
+     * Wait for that response so a late patch can't overwrite what a test just typed.
+     */
+    protected async gotoAndWaitForSettings(pathname: string, keyParam: string): Promise<void> {
+        const loaded = this.page.waitForResponse(
+            res => res.url().includes('/settings') && res.url().includes(keyParam) && res.request().method() === 'GET'
+        );
+        await this.page.goto(pathname);
+        await loaded;
+        // let Angular apply the response to the form before the test starts typing
+        await this.page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => resolve())));
+    }
+
     async expectUrlMatches(pattern: RegExp): Promise<void> {
         await expect(this.page).toHaveURL(pattern);
     }

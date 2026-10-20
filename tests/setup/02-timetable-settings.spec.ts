@@ -1,142 +1,143 @@
 import { authenticatedTest as test, expect } from '../fixtures';
-import { TimetableSettingsPage } from '../pages/TimetableSettingsPage';
+import { TimetableTemplateFormData, TimetableTemplatePage } from '../pages/TimetableTemplatePage';
 
-// TODO: skipped — /settings/academic/time-table was removed from the app and replaced by
-// timetable templates (/timetable/templates). Rewrite TimetableSettingsPage and this spec
-// against ManageTimetableTemplateComponent, then remove .skip.
-test.describe.skip('Timetable Settings', () => {
-    test.describe('Page load', () => {
-        test('loads the timetable settings form', async ({ page }) => {
-            const timetablePage = new TimetableSettingsPage(page);
-            await timetablePage.visit();
-            await timetablePage.expectFormVisible();
+const validTemplate: TimetableTemplateFormData = {
+    name: 'E2E Default Timetable',
+    status: 'ACTIVE',
+    activeDays: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'],
+    dayStart: '08:00',
+    dayEnd: '15:00',
+    periodMinutes: '45',
+    breaks: [{ startTime: '10:00', endTime: '10:15' }],
+};
 
+test.describe('Timetable Templates', () => {
+    test.describe('List view', () => {
+        test('loads the template list with expected columns', async ({ page }) => {
+            const templatePage = new TimetableTemplatePage(page);
+            await templatePage.visitList();
+
+            await templatePage.expectColumnHeaders(['#', 'Name', 'Active Days', 'Status', 'Actions']);
+        });
+
+        test('Add Template button navigates to the create form', async ({ page }) => {
+            const templatePage = new TimetableTemplatePage(page);
+            await templatePage.visitList();
+
+            await templatePage.clickAddTemplate();
+
+            await expect(page).toHaveURL(/timetable\/templates\/manage/i);
+            await templatePage.expectFormVisible();
+        });
+    });
+
+    test.describe('Create form — page load', () => {
+        test('loads the template form', async ({ page }) => {
+            const templatePage = new TimetableTemplatePage(page);
+            await templatePage.visitCreate();
+
+            await expect(page.locator('input[formcontrolname="name"]')).toBeVisible();
+            await expect(page.locator('select[formcontrolname="status"]')).toHaveValue('ACTIVE');
             await expect(page.locator('input[formcontrolname="periodMinutes"]')).toBeVisible();
             await expect(page.locator('[formarrayname="activeDays"]')).toBeVisible();
         });
     });
 
     test.describe('Validation — bad cases', () => {
-        test('save button is disabled when form is invalid', async ({ page }) => {
-            const timetablePage = new TimetableSettingsPage(page);
-            await timetablePage.visit();
-            await timetablePage.expectFormVisible();
+        test('save button is disabled when form is empty', async ({ page }) => {
+            const templatePage = new TimetableTemplatePage(page);
+            await templatePage.visitCreate();
 
             await expect(page.locator('button[type="submit"].btn-primary')).toBeDisabled();
         });
 
-        test('shows error when Period Duration is cleared and form touched', async ({ page }) => {
-            const timetablePage = new TimetableSettingsPage(page);
-            await timetablePage.visit();
-            await timetablePage.expectFormVisible();
+        test('shows required error for Name when touched and empty', async ({ page }) => {
+            const templatePage = new TimetableTemplatePage(page);
+            await templatePage.visitCreate();
 
-            await page.locator('input[formcontrolname="periodMinutes"]').fill('');
-            await timetablePage.touchField('periodMinutes');
+            await templatePage.touchField('name');
+
+            await templatePage.expectFieldError(/name is required/i);
+        });
+
+        test('save button stays disabled when Period Duration is not numeric', async ({ page }) => {
+            const templatePage = new TimetableTemplatePage(page);
+            await templatePage.visitCreate();
+
+            await templatePage.fillForm({ ...validTemplate, breaks: undefined, periodMinutes: 'abc' });
 
             await expect(page.locator('button[type="submit"].btn-primary')).toBeDisabled();
-        });
-
-        test('add override button adds an override card', async ({ page }) => {
-            const timetablePage = new TimetableSettingsPage(page);
-            await timetablePage.visit();
-            await timetablePage.expectFormVisible();
-
-            const cards = page.locator('[formarrayname="overrides"] > div');
-
-            const before = await cards.count();
-            await timetablePage.addOverride();
-
-            await expect.poll(async () => await cards.count()).toBe(before + 1);
-        });
-
-        test('remove override button removes the override card', async ({ page }) => {
-            const timetablePage = new TimetableSettingsPage(page);
-            await timetablePage.visit();
-            await timetablePage.expectFormVisible();
-
-            const cards = page.locator('[formarrayname="overrides"] > div');
-            await timetablePage.addOverride();
-            await expect(cards).toHaveCount(1);
-            const before = await cards.count();
-            await timetablePage.removeOverride(0);
-            await expect(cards).toHaveCount(before - 1);
-        });
-    });
-    test.describe('Happy path', () => {
-
-
-        test('saves settings with a break added', async ({ page, truncateSchema }) => {
-            await truncateSchema();
-            const timetablePage = new TimetableSettingsPage(page);
-            await timetablePage.visit();
-            await timetablePage.expectFormVisible();
-
-            await timetablePage.fillForm({
-                activeDays: ['MONDAY', 'WEDNESDAY', 'FRIDAY'],
-                dayStart: '08:00',
-                dayEnd: '14:00',
-                periodMinutes: '40',
-                breaks: [{ startTime: '10:00', endTime: '10:15' }],
-            });
-
-            await timetablePage.submitForm();
-
-            await timetablePage.expectToastMessage(/success/i);
-        });
-
-        test('saves valid timetable settings (Mon–Fri, 08:00–15:00, 45 min periods)', async ({ page, truncateSchema }) => {
-            await truncateSchema();
-            const timetablePage = new TimetableSettingsPage(page);
-            await timetablePage.visit();
-            await timetablePage.expectFormVisible();
-
-            await timetablePage.fillForm({
-                activeDays: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'],
-                dayStart: '08:00',
-                dayEnd: '15:00',
-                periodMinutes: '45',
-            });
-
-            await timetablePage.submitForm();
-
-            await timetablePage.expectToastMessage(/success/i);
         });
     });
 
     test.describe('Breaks management', () => {
-        test('adds a break row when Add Break is clicked', async ({ page, truncateSchema }) => {
-            await truncateSchema();
-            const timetablePage = new TimetableSettingsPage(page);
-            await timetablePage.visit();
-            await timetablePage.expectFormVisible();
-            const breaks = page.locator('[formarrayname="breaks"] > div');
-            const before = await breaks.count();
-            await page
-                .locator('[formarrayname="breaks"]')
-                .getByRole('button', { name: /add break/i })
-                .click();
+        test('Add Break adds a break row', async ({ page }) => {
+            const templatePage = new TimetableTemplatePage(page);
+            await templatePage.visitCreate();
 
-            await expect.poll(async () => await breaks.count()).toBe(before + 1);
+            const before = await templatePage.breakRows.count();
+            await templatePage.addBreak();
+
+            await expect(templatePage.breakRows).toHaveCount(before + 1);
         });
 
-        test('removes a break row when the delete button is clicked', async ({ page }) => {
-            const timetablePage = new TimetableSettingsPage(page);
-            await timetablePage.visit();
-            await timetablePage.expectFormVisible();
+        test('delete button removes the break row', async ({ page }) => {
+            const templatePage = new TimetableTemplatePage(page);
+            await templatePage.visitCreate();
 
-            const breaks = page.locator('[formarrayname="breaks"] > div');
+            await templatePage.addBreak();
+            await expect(templatePage.breakRows).toHaveCount(1);
 
-            await page
-                .locator('[formarrayname="breaks"]')
-                .getByRole('button', { name: /add break/i })
-                .click();
+            await templatePage.removeBreak(0);
 
-            await expect(breaks).toHaveCount(1);
-            const before = await breaks.count();
-            await timetablePage.removeBreak(0);
-            await expect.poll(async () => await breaks.count()).toBe(before - 1);
+            await expect(templatePage.breakRows).toHaveCount(0);
         });
     });
 
+    test.describe('Overrides management', () => {
+        test('Add Override adds an override card', async ({ page }) => {
+            const templatePage = new TimetableTemplatePage(page);
+            await templatePage.visitCreate();
 
+            const before = await templatePage.overrideCards.count();
+            await templatePage.addOverride();
+
+            await expect(templatePage.overrideCards).toHaveCount(before + 1);
+        });
+
+        test('Remove button removes the override card', async ({ page }) => {
+            const templatePage = new TimetableTemplatePage(page);
+            await templatePage.visitCreate();
+
+            await templatePage.addOverride();
+            await expect(templatePage.overrideCards).toHaveCount(1);
+
+            await templatePage.removeOverride(0);
+
+            await expect(templatePage.overrideCards).toHaveCount(0);
+        });
+    });
+
+    test.describe('Happy path', () => {
+        test('creates a template (Mon–Fri, 08:00–15:00, 45 min periods, one break)', async ({ page }) => {
+            const templatePage = new TimetableTemplatePage(page);
+            await templatePage.visitCreate();
+
+            await templatePage.fillForm(validTemplate);
+            await expect(page.locator('button[type="submit"].btn-primary')).toBeEnabled();
+
+            const [response] = await Promise.all([
+                page.waitForResponse(res =>
+                    res.url().includes('/timetable-templates') && res.request().method() === 'POST'
+                ),
+                templatePage.submitForm(),
+            ]);
+            expect(response.ok()).toBeTruthy();
+
+            // saving navigates back to the list, where the new template should appear
+            await expect(page).toHaveURL(/timetable\/templates\/?$/i);
+            await templatePage.expectListVisible();
+            await expect(templatePage.rowByName(validTemplate.name!)).toBeVisible();
+        });
+    });
 });

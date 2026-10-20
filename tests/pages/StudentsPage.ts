@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export interface StudentFormData {
@@ -6,7 +6,7 @@ export interface StudentFormData {
     lastName: string;
     otherNames?: string;
     gender: 'Male' | 'Female';
-    dateOfBirth: string; // e.g. '01/15/2005'
+    dateOfBirth: string; // MM/DD/YYYY
     phoneNumber?: string;
     email?: string;
     status: 'Active' | 'Inactive';
@@ -22,176 +22,37 @@ export interface GuardianFormData {
     relationship: 'Father' | 'Mother' | 'Guardian' | 'Other';
     address?: string;
     occupation?: string;
+    isPrimary?: boolean;
 }
+
+const ID = 'app-add-student';
 
 export class StudentsPage extends BasePage {
     constructor(page: Page) {
         super(page);
     }
 
+    // ── Navigation ──────────────────────────────────────────────────────────
+
     async visit(): Promise<void> {
         await this.goto('/peoples/students/students-list');
+        await this.expectListVisible();
     }
 
     async visitAddForm(): Promise<void> {
         await this.goto('/peoples/students/add-student');
+        await this.expectFormVisible();
     }
 
     async visitEditForm(id: number | string): Promise<void> {
         await this.goto(`/peoples/students/edit-student/${id}`);
+        await this.expectFormVisible();
     }
+
+    // ── List view ───────────────────────────────────────────────────────────
 
     async expectListVisible(): Promise<void> {
-        const candidates = [
-            this.page.getByRole('table'),
-            this.page.locator('table.datatable'),
-            this.page.locator('.custom-datatable-filter'),
-        ];
-        for (const locator of candidates) {
-            if (await this.isVisible(locator)) return;
-        }
-    }
-
-    async clickAddStudent(): Promise<void> {
-        const candidates = [
-            this.page.getByRole('link', { name: /add student/i }),
-            this.page.locator('a[routerlink]').filter({ hasText: /add student/i }),
-            this.page.locator('.btn-primary').filter({ hasText: /add student/i }),
-        ];
-        for (const locator of candidates) {
-            if (await this.clickIfVisible(locator)) return;
-        }
-        throw new Error('Could not find Add Student button.');
-    }
-
-    async search(term: string): Promise<void> {
-        const candidates = [
-            this.page.locator('input[type="search"]'),
-            this.page.getByPlaceholder(/search/i),
-            this.page.locator('.dataTables_filter input'),
-        ];
-        for (const locator of candidates) {
-            if (await this.fillIfVisible(locator, term)) return;
-        }
-        throw new Error('Could not find search input.');
-    }
-
-    async fillStudentForm(data: StudentFormData): Promise<void> {
-        await this.fillField(/first name/i, data.firstName);
-        await this.fillField(/last name/i, data.lastName);
-
-        if (data.otherNames) {
-            await this.fillField(/other names/i, data.otherNames);
-        }
-
-        await this.selectPrimeDropdown('gender', data.gender);
-        await this.fillDateOfBirth(data.dateOfBirth);
-
-        if (data.phoneNumber) {
-            await this.fillField(/phone number/i, data.phoneNumber);
-        }
-
-        if (data.email) {
-            await this.fillField(/email/i, data.email);
-        }
-
-        await this.selectPrimeDropdown('status', data.status);
-
-        if (data.address) {
-            await this.fillField(/address/i, data.address);
-        }
-
-        if (data.notes) {
-            const textarea = this.page.locator('textarea[formControlName="notes"]');
-            await this.fillIfVisible(textarea, data.notes);
-        }
-    }
-
-    async addGuardian(data: GuardianFormData): Promise<void> {
-        const addBtn = this.page.getByRole('button', { name: /add guardian/i });
-        await addBtn.click();
-
-        const lastGuardian = this.page.locator('[formgroupname]').last();
-
-        await lastGuardian.locator('input[placeholder="First Name"]').fill(data.firstName);
-        await lastGuardian.locator('input[placeholder="Last Name"]').fill(data.lastName);
-        await lastGuardian.locator('input[placeholder="Email"]').fill(data.email);
-        await lastGuardian.locator('input[placeholder="Phone Number"]').fill(data.phoneNumber);
-
-        if (data.address) {
-            await lastGuardian.locator('input[placeholder="Address"]').fill(data.address);
-        }
-
-        if (data.occupation) {
-            await lastGuardian.locator('input[placeholder="Occupation"]').fill(data.occupation);
-        }
-
-        // Select relationship via PrimeNG dropdown inside guardian card
-        const relDropdown = lastGuardian.locator('p-dropdown[formcontrolname="relationshipToStudent"]');
-        await relDropdown.click();
-        await this.page.locator('.p-dropdown-item', { hasText: data.relationship }).first().click();
-    }
-
-    async submitForm(): Promise<void> {
-        const candidates = [
-            this.page.getByRole('button', { name: /add student|update student/i }),
-            this.page.locator('button[type="submit"]'),
-        ];
-        for (const locator of candidates) {
-            if (await this.clickIfVisible(locator)) return;
-        }
-        throw new Error('Could not find submit button.');
-    }
-
-    async openRowActions(nameOrId: string): Promise<void> {
-        const row = this.page.locator('tr').filter({ hasText: nameOrId });
-        const menuBtn = row.locator('[data-bs-toggle="dropdown"], .ti-dots-vertical').first();
-        await menuBtn.click();
-    }
-
-    async clickViewInRow(nameOrId: string): Promise<void> {
-        await this.openRowActions(nameOrId);
-        const option = this.page.getByRole('link', { name: /view student/i }).first();
-        await option.click();
-    }
-
-    async clickEditInRow(nameOrId: string): Promise<void> {
-        await this.openRowActions(nameOrId);
-        const option = this.page.getByRole('link', { name: /edit/i }).first();
-        await option.click();
-    }
-
-    async clickDeleteInRow(nameOrId: string): Promise<void> {
-        await this.openRowActions(nameOrId);
-        const candidates = [
-            this.page.getByRole('link', { name: /delete/i }).first(),
-            this.page.locator('.dropdown-item').filter({ hasText: /delete/i }).first(),
-        ];
-        for (const locator of candidates) {
-            if (await this.clickIfVisible(locator)) return;
-        }
-        throw new Error('Could not find Delete option in row actions.');
-    }
-
-    async confirmSwalDelete(): Promise<void> {
-        const confirmBtn = this.page.locator('.swal2-confirm, button.btn-success').filter({ hasText: /yes.*delete/i });
-        await confirmBtn.waitFor({ state: 'visible' });
-        await confirmBtn.click();
-    }
-
-    async cancelSwalDelete(): Promise<void> {
-        const cancelBtn = this.page.locator('.swal2-cancel, button.btn-danger').filter({ hasText: /cancel/i });
-        await cancelBtn.waitFor({ state: 'visible' });
-        await cancelBtn.click();
-    }
-
-    async expectToastMessage(text: RegExp | string): Promise<void> {
-        const toast = this.page.locator('p-toast .p-toast-message, .p-toast-detail').filter({ hasText: text });
-        await toast.waitFor({ state: 'visible', timeout: 10000 });
-    }
-
-    async getTableRowCount(): Promise<number> {
-        return this.page.locator('table.datatable tbody tr').count();
+        await this.page.locator('table.datatable').waitFor({ state: 'visible' });
     }
 
     async expectColumnHeaders(headers: string[]): Promise<void> {
@@ -201,35 +62,236 @@ export class StudentsPage extends BasePage {
         }
     }
 
-    private async fillField(label: RegExp, value: string): Promise<void> {
-        const candidates = [
-            this.page.getByLabel(label),
-            this.page.locator(`input[formcontrolname]`).filter({ has: this.page.locator(`..`).filter({ hasText: label }) }),
-        ];
-        for (const locator of candidates) {
-            if (await this.fillIfVisible(locator, value)) return;
-        }
-        // fallback: find the label then the sibling input
-        const labelEl = this.page.locator('label.form-label').filter({ hasText: label }).first();
-        const input = labelEl.locator('~ input, ~ div input').first();
-        if (await this.fillIfVisible(input, value)) return;
-        throw new Error(`Could not fill field matching ${label}`);
+    async clickAddStudent(): Promise<void> {
+        await this.page.getByRole('link', { name: /add student/i }).first().click();
     }
 
-    private async fillDateOfBirth(value: string): Promise<void> {
-        const candidates = [
-            this.page.locator('input.datetimepicker[formcontrolname="dateOfBirth"]'),
-            this.page.locator('input[formcontrolname="dateOfBirth"]'),
-        ];
-        for (const locator of candidates) {
-            if (await this.fillIfVisible(locator, value)) return;
-        }
-        throw new Error('Could not find date of birth input.');
+    async search(term: string): Promise<void> {
+        const input = this.page.locator('#DataTables_Table_0_filter input[type="search"]');
+        await input.waitFor({ state: 'visible' });
+        await input.fill(term);
     }
 
-    private async selectPrimeDropdown(formControlName: string, optionLabel: string): Promise<void> {
-        const dropdown = this.page.locator(`p-dropdown[formcontrolname="${formControlName}"]`);
-        await dropdown.click();
+    rowByName(name: string): Locator {
+        return this.page.locator('table.datatable tbody tr').filter({ hasText: name });
+    }
+
+    async openRowActions(name: string): Promise<void> {
+        await this.rowByName(name).locator('.ti-dots-vertical').first().click();
+    }
+
+    async clickViewInRow(name: string): Promise<void> {
+        await this.openRowActions(name);
+        await this.rowByName(name).locator('.dropdown-item').filter({ hasText: /view/i }).first().click();
+    }
+
+    async clickEditInRow(name: string): Promise<void> {
+        await this.openRowActions(name);
+        await this.rowByName(name).locator('.dropdown-item').filter({ hasText: /edit/i }).first().click();
+    }
+
+    async clickDeleteInRow(name: string): Promise<void> {
+        await this.openRowActions(name);
+        await this.rowByName(name).locator('.dropdown-item').filter({ hasText: /delete/i }).first().click();
+    }
+
+    async confirmSwalDelete(): Promise<void> {
+        const confirmBtn = this.page.locator('.swal2-confirm');
+        await confirmBtn.waitFor({ state: 'visible' });
+        await confirmBtn.click();
+        await this.page.locator('.swal2-popup').waitFor({ state: 'hidden' });
+    }
+
+    async cancelSwalDelete(): Promise<void> {
+        const cancelBtn = this.page.locator('.swal2-cancel');
+        await cancelBtn.waitFor({ state: 'visible' });
+        await cancelBtn.click();
+        await this.page.locator('.swal2-popup').waitFor({ state: 'hidden' });
+    }
+
+    async getTableRowCount(): Promise<number> {
+        return this.page.locator('table.datatable tbody tr').count();
+    }
+
+    // ── Student form ────────────────────────────────────────────────────────
+
+    async expectFormVisible(): Promise<void> {
+        await this.page.locator(`#${ID}-firstName`).waitFor({ state: 'visible' });
+    }
+
+    async fillStudentForm(data: StudentFormData): Promise<void> {
+        await this.fillById('firstName', data.firstName);
+        await this.fillById('lastName', data.lastName);
+
+        if (data.otherNames) {
+            await this.fillById('otherNames', data.otherNames);
+        }
+
+        await this.selectDropdown(`#${ID}-gender`, data.gender);
+        await this.fillDate(`#${ID}-dateOfBirth`, data.dateOfBirth);
+
+        if (data.phoneNumber) {
+            await this.fillById('phoneNumber', data.phoneNumber);
+        }
+
+        if (data.email) {
+            await this.fillById('email', data.email);
+        }
+
+        await this.selectDropdown(`#${ID}-status`, data.status);
+
+        if (data.address) {
+            await this.fillById('address', data.address);
+        }
+
+        if (data.notes) {
+            await this.fillById('notes', data.notes);
+        }
+    }
+
+    /** Blur a student form input so its "touched" validation message appears. */
+    async touchField(name: string): Promise<void> {
+        await this.page.locator(`#${ID}-${name}`).click();
+        await this.page.getByRole('heading', { name: /student/i }).first().click();
+    }
+
+    /** p-dropdown fields only mark touched after the overlay closes. */
+    async touchDropdown(name: string): Promise<void> {
+        await this.page.locator(`#${ID}-${name}`).click();
+        await this.page.keyboard.press('Escape');
+        await this.page.getByRole('heading', { name: /student/i }).first().click();
+    }
+
+    async submitForm(): Promise<void> {
+        await this.page.locator(`#${ID}-submit`).click();
+    }
+
+    async cancelForm(): Promise<void> {
+        await this.page.locator(`#${ID}-cancel`).click();
+    }
+
+    async isSubmitDisabled(): Promise<boolean> {
+        return this.page.locator(`#${ID}-submit`).isDisabled();
+    }
+
+    async expectFieldError(message: RegExp | string): Promise<void> {
+        const error = this.page.locator('.text-danger').filter({ hasText: message });
+        await error.first().waitFor({ state: 'visible', timeout: 5000 });
+    }
+
+    async expectToastMessage(text: RegExp | string): Promise<void> {
+        const toast = this.page.locator('.p-toast-message').filter({ hasText: text });
+        await toast.first().waitFor({ state: 'visible', timeout: 10000 });
+    }
+
+    // ── Guardians inside the student form ───────────────────────────────────
+
+    get guardianCards(): Locator {
+        return this.page.locator('[formarrayname="guardians"] > div');
+    }
+
+    async addGuardian(data?: GuardianFormData): Promise<void> {
+        const before = await this.guardianCards.count();
+        await this.page.locator(`#${ID}-guardians-add`).click();
+        await this.guardianCards.nth(before).waitFor({ state: 'visible' });
+
+        if (data) {
+            await this.fillGuardian(before, data);
+        }
+    }
+
+    async fillGuardian(index: number, data: GuardianFormData): Promise<void> {
+        await this.fillGuardianField(index, 'firstName', data.firstName);
+        await this.fillGuardianField(index, 'lastName', data.lastName);
+        await this.fillGuardianField(index, 'email', data.email);
+        await this.fillGuardianField(index, 'phoneNumber', data.phoneNumber);
+
+        if (data.address) {
+            await this.fillGuardianField(index, 'address', data.address);
+        }
+
+        if (data.occupation) {
+            await this.fillGuardianField(index, 'occupation', data.occupation);
+        }
+
+        await this.selectDropdown(`#${ID}-guardian-relationshipToStudent-${index}`, data.relationship);
+
+        if (data.isPrimary !== undefined) {
+            await this.page
+                .locator(`#${ID}-guardian-isPrimary-${index}`)
+                .selectOption({ label: data.isPrimary ? 'Yes' : 'No' });
+        }
+    }
+
+    /** Index of the guardian card whose last name matches (cards load in server order). */
+    async guardianIndexByLastName(lastName: string): Promise<number> {
+        const count = await this.guardianCards.count();
+        for (let i = 0; i < count; i++) {
+            if ((await this.page.locator(`#${ID}-guardian-lastName-${i}`).inputValue()) === lastName) {
+                return i;
+            }
+        }
+        throw new Error(`No guardian card with last name ${lastName}`);
+    }
+
+    async fillGuardianField(index: number, name: string, value: string): Promise<void> {
+        const input = this.page.locator(`#${ID}-guardian-${name}-${index}`);
+        await input.clear();
+        await input.fill(value);
+    }
+
+    async touchGuardianField(index: number, name: string): Promise<void> {
+        await this.page.locator(`#${ID}-guardian-${name}-${index}`).click();
+        await this.page.getByRole('heading', { name: /student/i }).first().click();
+    }
+
+    async removeGuardian(index: number): Promise<void> {
+        const before = await this.guardianCards.count();
+        await this.page.locator(`#${ID}-guardian-remove-${index}`).click();
+        // wait for Angular to drop the card so a following addGuardian() counts correctly
+        await expect(this.guardianCards).toHaveCount(before - 1);
+    }
+
+    // ── Search Guardian dialog ──────────────────────────────────────────────
+
+    async openGuardianSearch(): Promise<void> {
+        await this.page.locator(`#${ID}-guardians-search`).click();
+        await this.page.getByRole('dialog').waitFor({ state: 'visible' });
+    }
+
+    async searchGuardian(term: string): Promise<void> {
+        const dialog = this.page.getByRole('dialog');
+        await dialog.getByPlaceholder(/search by name, email or phone/i).fill(term);
+        await dialog.getByRole('button', { name: /^search$/i }).click();
+    }
+
+    async selectFirstGuardianResult(): Promise<void> {
+        await this.page.getByRole('dialog').getByRole('button', { name: /select/i }).first().click();
+    }
+
+    async clickCreateNewGuardian(): Promise<void> {
+        await this.page.getByRole('dialog').getByRole('button', { name: /create new guardian/i }).click();
+    }
+
+    // ── Private helpers ─────────────────────────────────────────────────────
+
+    private async fillById(name: string, value: string): Promise<void> {
+        const input = this.page.locator(`#${ID}-${name}`);
+        await input.clear();
+        await input.fill(value);
+    }
+
+    private async fillDate(selector: string, value: string): Promise<void> {
+        const input = this.page.locator(selector);
+        await input.click();
+        // close the datepicker overlay so it doesn't cover the next field
+        await this.page.keyboard.press('Escape');
+        await input.fill(value);
+        await input.press('Tab');
+    }
+
+    private async selectDropdown(selector: string, optionLabel: string): Promise<void> {
+        await this.page.locator(selector).click();
         const option = this.page.locator('.p-dropdown-item').filter({ hasText: optionLabel }).first();
         await option.waitFor({ state: 'visible' });
         await option.click();

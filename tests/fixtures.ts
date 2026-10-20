@@ -62,6 +62,16 @@ export const authenticatedTest = test.extend({
         const config = getLoginTestConfig();
         const loginPage = new LoginPage(page);
 
+        // The app shows a "New: Global Search" tip card to fresh browser profiles. It floats over
+        // the page and can intercept clicks, so mark it dismissed before the app boots.
+        await page.addInitScript(() => {
+            try {
+                localStorage.setItem('searchTipDismissed', '1');
+            } catch {
+                // storage unavailable (e.g. opaque origin): nothing to dismiss
+            }
+        });
+
         await loginPage.visit();
         await loginPage.login(credentials.email, credentials.password);
         await expect(page).toHaveURL(new RegExp(config.successUrlPattern, 'i'));

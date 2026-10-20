@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class LoginPage extends BasePage {
@@ -14,6 +14,23 @@ export class LoginPage extends BasePage {
         await this.fillEmail(email);
         await this.fillPassword(password);
         await this.submit();
+    }
+
+    /** First login for a staff member created by an admin: Keycloak forces a password change. */
+    async completeRequiredPasswordUpdate(newPassword: string): Promise<void> {
+        await this.page.locator('#password-new').fill(newPassword);
+        await this.page.locator('#password-confirm').fill(newPassword);
+        await this.page.locator('button[type="submit"]').first().click();
+    }
+
+    async expectPasswordUpdateRequired(): Promise<void> {
+        await expect(this.page.getByText(/update password/i).first()).toBeVisible();
+        await expect(this.page.locator('#password-new')).toBeVisible();
+    }
+
+    async expectInvalidCredentials(): Promise<void> {
+        await expect(this.page.getByText(/invalid username or password/i)).toBeVisible();
+        await expect(this.page).toHaveURL(/keycloak\.kwamekert\.com/);
     }
 
     async hasVisibleLoginError(): Promise<boolean> {

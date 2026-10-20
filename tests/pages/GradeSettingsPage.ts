@@ -13,7 +13,7 @@ export class GradeSettingsPage extends BasePage {
     }
 
     async visit(): Promise<void> {
-        await this.goto('/academic/grades/settings');
+        await this.gotoAndWaitForSettings('/academic/grades/settings', 'key=grade');
     }
 
     async expectFormVisible(): Promise<void> {
