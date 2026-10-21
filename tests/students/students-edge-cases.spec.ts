@@ -110,4 +110,83 @@ test.describe.serial('Students — inactive and unusual data', () => {
         await page.reload();
         await expect(page.getByText(/no guardians have been added/i)).toBeVisible();
     });
+
+    test.describe('Student ID uniqueness', () => {
+        // Rule: two students cannot share a student ID, but the ID is optional (blank gets a generated one).
+        const sharedId = `SID-${Date.now().toString(36)}`;
+        const owner = makeStudent({ studentId: sharedId });
+        const clash = makeStudent({ studentId: sharedId });
+        const other = makeStudent({ studentId: `${sharedId}-B` });
+        const blankA = makeStudent();
+        const blankB = makeStudent();
+
+        const isStudentWrite = (method: string) => (res: { url(): string; request(): { method(): string } }) =>
+            res.url().includes('/students') && !res.url().includes('/guardians') && res.request().method() === method;
+
+        async function createStudent(page: import('@playwright/test').Page, data: ReturnType<typeof makeStudent>) {
+            const studentsPage = new StudentsPage(page);
+            await studentsPage.visitAddForm();
+            await studentsPage.fillStudentForm(data);
+            return Promise.all([page.waitForResponse(isStudentWrite('POST')), studentsPage.submitForm()]);
+        }
+
+        test('a student can be created with their own student ID', async ({ page }) => {
+            const [response] = await createStudent(page, owner);
+
+            expect(response.ok(), `status ${response.status()}: ${await response.text()}`).toBeTruthy();
+            await expect(page).toHaveURL(/student-details\/\d+/i);
+            await page.reload();
+            await expect(page.getByText(sharedId, { exact: true })).toBeVisible();
+        });
+
+        test('a second student with the same student ID is rejected and nothing is created', async ({ page }) => {
+            const [response] = await createStudent(page, clash);
+
+            expect(response.status()).toBeGreaterThanOrEqual(400);
+            expect(response.status()).toBeLessThan(500);
+            await expect(page.locator('.p-toast-message-error').first()).toBeVisible();
+            await expect(page).toHaveURL(/add-student/i);
+
+            const studentsPage = new StudentsPage(page);
+            await studentsPage.visit();
+            await studentsPage.search(clash.lastName);
+            await expect(studentsPage.rowByName(clash.lastName)).toHaveCount(0);
+        });
+
+        test('editing a student to another student\'s ID is rejected', async ({ page }) => {
+            const [created] = await createStudent(page, other);
+            expect(created.ok(), `status ${created.status()}: ${await created.text()}`).toBeTruthy();
+
+            const studentsPage = new StudentsPage(page);
+            await studentsPage.visit();
+            await studentsPage.search(other.lastName);
+            await expect(studentsPage.rowByName(other.lastName)).toBeVisible();
+            await studentsPage.clickEditInRow(other.lastName);
+            await expect(page.locator('#app-add-student-lastName')).toHaveValue(other.lastName);
+
+            await page.locator('#app-add-student-studentId').fill(sharedId);
+            const [response] = await Promise.all([page.waitForResponse(isStudentWrite('PUT')), studentsPage.submitForm()]);
+
+            expect(response.status()).toBeGreaterThanOrEqual(400);
+            expect(response.status()).toBeLessThan(500);
+            await expect(page.locator('.p-toast-message-error').first()).toBeVisible();
+        });
+
+        test('students created without a student ID each get their own generated one', async ({ page }) => {
+            const ids: string[] = [];
+            for (const data of [blankA, blankB]) {
+                const [response] = await createStudent(page, data);
+                expect(response.ok(), `status ${response.status()}: ${await response.text()}`).toBeTruthy();
+                await expect(page).toHaveURL(/student-details\/\d+/i);
+                await page.reload();
+                const idLabel = page.getByRole('heading', { name: new RegExp(data.lastName) }).locator('xpath=following-sibling::p[1]');
+                await expect(idLabel).toHaveText(/\S+/);
+                ids.push(((await idLabel.textContent()) ?? '').trim());
+            }
+
+            expect(ids[0]).toMatch(/\S+/);
+            expect(ids[1]).toMatch(/\S+/);
+            expect(ids[0]).not.toEqual(ids[1]);
+        });
+    });
 });

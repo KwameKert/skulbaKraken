@@ -1,4 +1,4 @@
-import { authenticatedTest as test, expect, test as baseTest } from '../fixtures';
+import { authenticatedTest as test, expect, test as baseTest, loggedOut } from '../fixtures';
 import { StaffPage } from '../pages/StaffPage';
 import { makeStaff } from '../data/people';
 
@@ -252,6 +252,8 @@ test.describe.serial('Staff', () => {
 });
 
 baseTest.describe('Staff — navigation guard', () => {
+    baseTest.use(loggedOut);
+
     baseTest('redirects unauthenticated users to the login page', async ({ page }) => {
         await page.goto('/peoples/staff/staff-list');
 

@@ -8,6 +8,9 @@ import path from 'path';
  */
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
+/** Session saved by tests/auth.setup.ts; every project except `auth` starts logged in from it. */
+const authFile = path.resolve(__dirname, 'playwright/.auth/admin.json');
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -34,11 +37,17 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'auth',
+      testMatch: '**/auth.setup.ts',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
       name: 'setup',
       testMatch: '**/setup/**/*.spec.ts',
+      dependencies: ['auth'],
       fullyParallel: false,
       workers: 1,
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], storageState: authFile },
     },
     {
       name: 'academic',
@@ -46,25 +55,25 @@ export default defineConfig({
       dependencies: ['setup'],
       // fullyParallel: false,
       // workers: 1,
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], storageState: authFile },
     },
     {
       name: 'students',
       testMatch: '**/students/**/*.spec.ts',
       dependencies: ['setup'],
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], storageState: authFile },
     },
     {
       name: 'guardians',
       testMatch: '**/guardians/**/*.spec.ts',
       dependencies: ['setup'],
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], storageState: authFile },
     },
     {
       name: 'staff',
       testMatch: '**/staff/**/*.spec.ts',
       dependencies: ['setup'],
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], storageState: authFile },
     },
 
     // {

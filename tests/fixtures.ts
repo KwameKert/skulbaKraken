@@ -1,6 +1,4 @@
 import { expect, test as base } from '@playwright/test';
-import { getLoginCredentials, getLoginTestConfig } from './data/credentials';
-import { LoginPage } from './pages/LoginPage';
 
 type TestFixtures = {
     truncateSchema: () => Promise<void>;
@@ -56,12 +54,12 @@ export const test = base.extend<TestFixtures>({
     },
 });
 
+/**
+ * Tests that need a logged-in admin. The session comes from the project's `storageState`
+ * (saved once by tests/auth.setup.ts), so there is no login form here.
+ */
 export const authenticatedTest = test.extend({
     page: async ({ page }, use) => {
-        const credentials = getLoginCredentials();
-        const config = getLoginTestConfig();
-        const loginPage = new LoginPage(page);
-
         // The app shows a "New: Global Search" tip card to fresh browser profiles. It floats over
         // the page and can intercept clicks, so mark it dismissed before the app boots.
         await page.addInitScript(() => {
@@ -72,12 +70,11 @@ export const authenticatedTest = test.extend({
             }
         });
 
-        await loginPage.visit();
-        await loginPage.login(credentials.email, credentials.password);
-        await expect(page).toHaveURL(new RegExp(config.successUrlPattern, 'i'));
-
         await use(page);
     },
 });
+
+/** Opt a test or describe block out of the saved admin session: `test.use(loggedOut)`. */
+export const loggedOut = { storageState: { cookies: [], origins: [] } };
 
 export { expect };

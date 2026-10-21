@@ -1,4 +1,4 @@
-import { authenticatedTest as test, expect, test as baseTest } from '../fixtures';
+import { authenticatedTest as test, expect, test as baseTest, loggedOut } from '../fixtures';
 import { StudentsPage } from '../pages/StudentsPage';
 import { GuardiansPage } from '../pages/GuardiansPage';
 import { makeGuardian, makeStudent } from '../data/people';
@@ -289,6 +289,8 @@ test.describe.serial('Students', () => {
 });
 
 baseTest.describe('Students — navigation guard', () => {
+    baseTest.use(loggedOut);
+
     baseTest('redirects unauthenticated users to the login page', async ({ page }) => {
         await page.goto('/peoples/students/students-list');
 

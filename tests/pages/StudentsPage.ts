@@ -2,6 +2,7 @@ import { expect, Locator, Page } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export interface StudentFormData {
+    studentId?: string;
     firstName: string;
     lastName: string;
     otherNames?: string;
@@ -120,6 +121,10 @@ export class StudentsPage extends BasePage {
     }
 
     async fillStudentForm(data: StudentFormData): Promise<void> {
+        if (data.studentId) {
+            await this.fillById('studentId', data.studentId);
+        }
+
         await this.fillById('firstName', data.firstName);
         await this.fillById('lastName', data.lastName);
 

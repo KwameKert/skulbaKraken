@@ -1,5 +1,5 @@
 import { Browser, Page } from '@playwright/test';
-import { authenticatedTest as test, expect } from '../fixtures';
+import { authenticatedTest as test, expect, loggedOut } from '../fixtures';
 import { StaffPage } from '../pages/StaffPage';
 import { LoginPage } from '../pages/LoginPage';
 import { makeStaff } from '../data/people';
@@ -12,6 +12,9 @@ import { makeStaff } from '../data/people';
  */
 const TEMP_PASSWORD = 'password';
 const NEW_PASSWORD = 'Newpass#12345';
+const AFTER_RESET_PASSWORD = 'Afterreset#12345';
+// the password the staff member currently has; the Reset Password test changes it
+let currentPassword = NEW_PASSWORD;
 
 const staff = makeStaff({ employeeType: 'Teacher' });
 const fullName = `${staff.firstName} ${staff.lastName}`;
@@ -20,7 +23,7 @@ const isEmployeeWrite = (method: string) => (res: { url(): string; request(): { 
     res.url().includes('/employees') && res.request().method() === method;
 
 async function freshLogin(browser: Browser, email: string, password: string): Promise<{ page: Page; login: LoginPage; close: () => Promise<void> }> {
-    const context = await browser.newContext();
+    const context = await browser.newContext(loggedOut);
     const page = await context.newPage();
     const login = new LoginPage(page);
     await login.visit();
@@ -65,6 +68,30 @@ test.describe.serial('Staff — sign-in access', () => {
         await close();
     });
 
+    test('Reset Password sets the temporary password again', async ({ page, browser }) => {
+        const staffPage = new StaffPage(page);
+        await staffPage.visit();
+        await staffPage.search(staff.lastName);
+        await expect(staffPage.rowByName(fullName)).toBeVisible();
+        await staffPage.clickResetPasswordInRow(fullName);
+        const [response] = await Promise.all([
+            page.waitForResponse(res => /reset/i.test(res.url()) && res.request().method() !== 'GET'),
+            staffPage.confirmSwal(),
+        ]);
+        expect(response.ok(), `status ${response.status()}: ${await response.text()}`).toBeTruthy();
+
+        const old = await freshLogin(browser, staff.email, NEW_PASSWORD);
+        await old.login.expectInvalidCredentials();
+        await old.close();
+
+        const reset = await freshLogin(browser, staff.email, TEMP_PASSWORD);
+        await reset.login.expectPasswordUpdateRequired();
+        await reset.login.completeRequiredPasswordUpdate(AFTER_RESET_PASSWORD);
+        await expect(reset.page).toHaveURL(/localhost:4200\/dashboard/);
+        await reset.close();
+        currentPassword = AFTER_RESET_PASSWORD;
+    });
+
     test('a role change is reflected at the next login', async ({ page, browser }) => {
         const staffPage = new StaffPage(page);
         await staffPage.visit();
@@ -78,7 +105,7 @@ test.describe.serial('Staff — sign-in access', () => {
         const [response] = await Promise.all([page.waitForResponse(isEmployeeWrite('PATCH')), staffPage.submitForm()]);
         expect(response.ok()).toBeTruthy();
 
-        const login = await freshLogin(browser, staff.email, NEW_PASSWORD);
+        const login = await freshLogin(browser, staff.email, currentPassword);
         await expect(login.page).toHaveURL(/localhost:4200\/dashboard/);
         await expect(login.page).not.toHaveURL(/teacher-dashboard/);
         await login.close();
@@ -93,7 +120,7 @@ test.describe.serial('Staff — sign-in access', () => {
         const [response] = await Promise.all([page.waitForResponse(isEmployeeWrite('DELETE')), staffPage.confirmSwal()]);
         expect(response.ok()).toBeTruthy();
 
-        const login = await freshLogin(browser, staff.email, NEW_PASSWORD);
+        const login = await freshLogin(browser, staff.email, currentPassword);
         await login.login.expectInvalidCredentials();
         await login.close();
     });
