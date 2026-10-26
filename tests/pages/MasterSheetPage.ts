@@ -1,5 +1,6 @@
 import { expect, Locator, Page, Response } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { ReportCardDialog } from './ReportCardDialog';
 
 export interface MasterSheetRow {
     student: string;
@@ -44,6 +45,23 @@ export class MasterSheetPage extends BasePage {
         await this.visit();
         await this.selectClass(className);
         return this.generate();
+    }
+
+    /** Clicks Report on a student's row and waits for the dialog to load the figures and any saved remarks. */
+    async openReport(studentLastName: string): Promise<ReportCardDialog> {
+        const row = this.page.locator('table.datatable tbody tr').filter({ hasText: studentLastName });
+        await Promise.all([
+            this.page.waitForResponse(res => /grade-records\/report-sheet/.test(res.url())),
+            this.page.waitForResponse(res => /grade-records\/report\?/.test(res.url()) && res.request().method() === 'GET'),
+            row.getByRole('button', { name: 'Report' }).click(),
+        ]);
+        const dialog = new ReportCardDialog(this.page);
+        await dialog.waitUntilOpen();
+        return dialog;
+    }
+
+    async expectToastMessage(text: RegExp | string): Promise<void> {
+        await expect(this.page.locator('p-toast .p-toast-detail').filter({ hasText: text }).first()).toBeVisible();
     }
 
     /** Column titles in order: Student, one per course, Position, Total, Action. */

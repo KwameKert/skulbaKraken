@@ -26,8 +26,8 @@ export interface Classroom {
 }
 
 /**
- * Builds a class the way an administrator would: a teacher, the courses, the class with its weights,
- * the courses assigned to it and enrolled students, each with a guardian. Every flow that needs a
+ * Builds a class the way an administrator would: a teacher, the courses, the class (with that teacher as
+ * its class teacher) and its weights, the courses assigned to it and enrolled students, each with a guardian. Every flow that needs a
  * populated class starts here.
  */
 export async function buildClassroom(page: Page, options: ClassroomOptions): Promise<Classroom> {
@@ -50,7 +50,7 @@ export async function buildClassroom(page: Page, options: ClassroomOptions): Pro
         expect(created.ok(), `create course ${name}: status ${created.status()}`).toBeTruthy();
     }
 
-    const classId = await createClass(page, className);
+    const classId = await createClass(page, className, 'ACTIVE', teacherName);
     const details = new ClassDetailsPage(page);
     await details.visit(classId);
     const set = await details.setGradeWeights(weights);
