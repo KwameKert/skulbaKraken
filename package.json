@@ -4,11 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test",
+    "test": "playwright test --workers=3 --retries=0 --reporter=list",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
-    "test:login": "playwright test tests/auth/login.spec.ts"
+    "test:flows": "playwright test --grep @flow --workers=1 --retries=0 --reporter=list",
+    "test:features": "playwright test --grep-invert @flow --workers=3 --retries=0 --reporter=list",
+    "test:fresh": "RUN_SETUP=1 playwright test --workers=3 --retries=0 --reporter=list",
+    "test:setup": "RUN_SETUP=1 playwright test --project=setup --retries=0 --reporter=list"
   },
   "keywords": [],
   "author": "",

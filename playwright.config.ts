@@ -12,6 +12,15 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 const authFile = path.resolve(__dirname, 'playwright/.auth/admin.json');
 
 /**
+ * The `setup` project truncates the database and rebuilds the school (settings, academic year,
+ * terms, timetable, grades). It only exists when RUN_SETUP=1, so a normal run keeps the data that
+ * is already there and can never wipe it by accident. `npm run test:fresh` turns it on and makes
+ * every other project wait for it.
+ */
+const withSetup = process.env.RUN_SETUP === '1';
+const afterSetup = withSetup ? ['setup'] : ['auth'];
+
+/**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
@@ -41,18 +50,20 @@ export default defineConfig({
       testMatch: '**/auth.setup.ts',
       use: { ...devices['Desktop Chrome'] },
     },
-    {
-      name: 'setup',
-      testMatch: '**/setup/**/*.spec.ts',
-      dependencies: ['auth'],
-      fullyParallel: false,
-      workers: 1,
-      use: { ...devices['Desktop Chrome'], storageState: authFile },
-    },
+    ...(withSetup
+      ? [{
+          name: 'setup',
+          testMatch: '**/setup/**/*.spec.ts',
+          dependencies: ['auth'],
+          fullyParallel: false,
+          workers: 1,
+          use: { ...devices['Desktop Chrome'], storageState: authFile },
+        }]
+      : []),
     {
       name: 'academic',
       testMatch: '**/academic/**/*.spec.ts',
-      dependencies: ['setup'],
+      dependencies: afterSetup,
       // fullyParallel: false,
       // workers: 1,
       use: { ...devices['Desktop Chrome'], storageState: authFile },
@@ -60,19 +71,19 @@ export default defineConfig({
     {
       name: 'students',
       testMatch: '**/students/**/*.spec.ts',
-      dependencies: ['setup'],
+      dependencies: afterSetup,
       use: { ...devices['Desktop Chrome'], storageState: authFile },
     },
     {
       name: 'guardians',
       testMatch: '**/guardians/**/*.spec.ts',
-      dependencies: ['setup'],
+      dependencies: afterSetup,
       use: { ...devices['Desktop Chrome'], storageState: authFile },
     },
     {
       name: 'staff',
       testMatch: '**/staff/**/*.spec.ts',
-      dependencies: ['setup'],
+      dependencies: afterSetup,
       use: { ...devices['Desktop Chrome'], storageState: authFile },
     },
 

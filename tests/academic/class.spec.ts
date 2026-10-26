@@ -219,15 +219,14 @@ test.describe('Classes', () => {
             await classPage.visit();
             await classPage.expectListVisible();
 
-            const rowsBefore = await classPage.getTableRowCount();
+            const deletedRow = page.locator('table.datatable tbody tr').filter({ hasText: classToDelete });
+            await expect(deletedRow).toHaveCount(1);
             await classPage.clickDeleteInRow(classToDelete);
             await classPage.confirmSwalDelete();
 
             await classPage.expectToastMessage(/deleted successfully/i);
-            await expect.poll(
-                async () => classPage.getTableRowCount(),
-                { message: 'Expected row count to decrease by 1 after delete.' }
-            ).toBe(rowsBefore - 1);
+            // the list is paginated, so the row count may not drop; the deleted class must be gone
+            await expect(deletedRow).toHaveCount(0);
         });
     });
 });

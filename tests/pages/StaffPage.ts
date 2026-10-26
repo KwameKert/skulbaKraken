@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export interface StaffFormData {
@@ -187,6 +187,15 @@ export class StaffPage extends BasePage {
 
     async isSubmitDisabled(): Promise<boolean> {
         return this.page.locator(`#${ID}-submit-button`).isDisabled();
+    }
+
+    /** Retrying checks: Angular enables the button a moment after the last field is filled. */
+    async expectSubmitEnabled(): Promise<void> {
+        await expect(this.page.locator(`#${ID}-submit-button`)).toBeEnabled();
+    }
+
+    async expectSubmitDisabled(): Promise<void> {
+        await expect(this.page.locator(`#${ID}-submit-button`)).toBeDisabled();
     }
 
     async expectFieldError(message: RegExp | string): Promise<void> {

@@ -21,6 +21,7 @@ test.describe('School Settings', () => {
             await schoolPage.visit();
             await schoolPage.expectFormVisible();
 
+            await schoolPage.clearField('schoolName');
             await schoolPage.touchField('schoolName');
 
             await schoolPage.expectFieldError('schoolName', /school name is required/i);
@@ -31,6 +32,7 @@ test.describe('School Settings', () => {
             await schoolPage.visit();
             await schoolPage.expectFormVisible();
 
+            await schoolPage.clearField('phoneNumber');
             await schoolPage.touchField('phoneNumber');
 
             await schoolPage.expectFieldError('phoneNumber', /phone number is required/i);
@@ -41,6 +43,7 @@ test.describe('School Settings', () => {
             await schoolPage.visit();
             await schoolPage.expectFormVisible();
 
+            await schoolPage.clearField('email');
             await schoolPage.touchField('email');
 
             await schoolPage.expectFieldError('email', /email is required/i);
@@ -62,6 +65,7 @@ test.describe('School Settings', () => {
             await schoolPage.visit();
             await schoolPage.expectFormVisible();
 
+            await schoolPage.clearField('address');
             await schoolPage.touchField('address');
 
             await schoolPage.expectFieldError('address', /address is required/i);
@@ -71,6 +75,8 @@ test.describe('School Settings', () => {
             const schoolPage = new SchoolSettingsPage(page);
             await schoolPage.visit();
             await schoolPage.expectFormVisible();
+
+            await schoolPage.clearField('schoolName');
 
             await expect(page.locator('button[type="submit"].btn-primary')).toBeDisabled();
         });

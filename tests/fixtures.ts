@@ -18,8 +18,11 @@ export const test = base.extend<TestFixtures>({
                 throw new Error('Missing TEST_RESET_SECRET environment variable required for truncateSchema().');
             }
 
+            // The reset deletes every employee's Keycloak user one by one before truncating, so it grows with
+            // the data the tests have created. Give it room instead of the default 30 seconds.
             const response = await request.post(`${backendUrl}/users/test/reset`, {
                 headers: { 'X-Reset-Secret': resetSecret },
+                timeout: 600_000,
             });
 
             if (!response.ok()) {

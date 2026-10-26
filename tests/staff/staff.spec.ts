@@ -35,7 +35,7 @@ test.describe.serial('Staff', () => {
             await staffPage.visitAddForm();
 
             await expect(page.getByRole('heading', { name: /add staff/i })).toBeVisible();
-            expect(await staffPage.isSubmitDisabled()).toBeTruthy();
+            await staffPage.expectSubmitDisabled();
         });
 
         test('shows required errors for First Name and Last Name', async ({ page }) => {
@@ -85,7 +85,7 @@ test.describe.serial('Staff', () => {
             await staffPage.visitAddForm();
 
             await staffPage.fillStaffForm(staff);
-            expect(await staffPage.isSubmitDisabled()).toBeFalsy();
+            await staffPage.expectSubmitEnabled();
 
             const [response] = await Promise.all([
                 page.waitForResponse(isEmployeeWrite('POST')),

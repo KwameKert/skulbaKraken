@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export interface SchoolSettingsFormData {
@@ -32,6 +32,18 @@ export class SchoolSettingsPage extends BasePage {
         }
 
         await this.fillField('textarea[formcontrolname="address"]', data.address);
+    }
+
+    /**
+     * Empties a field once the saved values have loaded. The form is filled by an API call after it
+     * renders, so without the wait a late response would put the old value back, and the required
+     * checks would pass or fail depending on what an earlier run saved.
+     */
+    async clearField(formControlName: string): Promise<void> {
+        await this.page.waitForLoadState('networkidle');
+        const input = this.page.locator(`[formcontrolname="${formControlName}"]`).first();
+        await input.fill('');
+        await expect(input).toHaveValue('');
     }
 
     async touchField(formControlName: string): Promise<void> {

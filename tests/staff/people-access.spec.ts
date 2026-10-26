@@ -37,6 +37,7 @@ async function openAs(browser: Browser, role: keyof typeof ROLES, path: string):
 
 test.describe.serial('People pages — role access', () => {
     test('creates a teacher, and a student with a guardian, and completes their first logins', async ({ page, browser }) => {
+        test.setTimeout(120_000);
         const staffPage = new StaffPage(page);
         await staffPage.visitAddForm();
         await staffPage.fillStaffForm(teacher);

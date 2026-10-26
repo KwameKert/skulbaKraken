@@ -136,6 +136,8 @@ test.describe.serial('Guardians', () => {
                 guardiansPage.submitModal(),
             ]);
             await expect(guardiansPage.dialog).toBeHidden();
+            // the list reloads after a save; opening the menu before it settles clicks a detached row
+            await expect(guardiansPage.rowByPhone(guardian.phoneNumber)).toContainText(/inactive/i);
 
             await guardiansPage.clickEditInRow(guardian.phoneNumber);
 
