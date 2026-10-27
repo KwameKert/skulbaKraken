@@ -1,16 +1,15 @@
-import path from 'path';
 import { expect, test as setup } from './fixtures';
-import { getLoginCredentials, getLoginTestConfig } from './data/credentials';
+import { TENANT_AUTH_FILE } from './data/auth-files';
+import { getLoginTestConfig, getTenantCredentials } from './data/credentials';
 import { LoginPage } from './pages/LoginPage';
 
 /**
- * Logs in once through Keycloak and saves the browser session. Every other project starts from
- * this file (see `storageState` in playwright.config.ts), so tests no longer repeat the login form.
+ * Logs in once as the tenant owner and saves the browser session. Only the setup project uses it:
+ * the tenant creates the administrator (tests/setup/01a-admin-user.spec.ts) and every test after
+ * that signs in as that administrator (tests/admin.auth.ts).
  */
-export const AUTH_FILE = path.join(__dirname, '..', 'playwright', '.auth', 'admin.json');
-
-setup('authenticate as the admin user', async ({ page }) => {
-    const credentials = getLoginCredentials();
+setup('authenticate as the tenant owner', async ({ page }) => {
+    const credentials = getTenantCredentials();
     const config = getLoginTestConfig();
     const loginPage = new LoginPage(page);
 
@@ -18,5 +17,5 @@ setup('authenticate as the admin user', async ({ page }) => {
     await loginPage.login(credentials.email, credentials.password);
     await expect(page).toHaveURL(new RegExp(config.successUrlPattern, 'i'));
 
-    await page.context().storageState({ path: AUTH_FILE });
+    await page.context().storageState({ path: TENANT_AUTH_FILE });
 });

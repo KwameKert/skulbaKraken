@@ -162,11 +162,14 @@ test.describe.serial('Report cards — who can read and change them', () => {
             const t = await asAma(browser);
             const one = await t.get(reportUrl(t, 'A'));
             const many = await bulk(t, 'A');
+            const pdf = await t.get(pdfUrl(t, 'A'));
             await t.close();
 
             expect(one.status, one.body.slice(0, 160)).toBe(200);
             expect(payloadOf(one.body)).toContain(remarkA);
-            expect(REFUSED, `bulk pdf: ${many.body.slice(0, 160)}`).not.toContain(many.status);
+            // a draft report has no publication, so its PDF is rendered with the active template instead of failing
+            expect(pdf.status, `report pdf: ${pdf.body.slice(0, 160)}`).toBe(200);
+            expect([401, 403], `bulk pdf: ${many.body.slice(0, 160)}`).not.toContain(many.status);
             expect(many.status, many.body.slice(0, 160)).toBeLessThan(500);
         });
 

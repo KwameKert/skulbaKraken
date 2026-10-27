@@ -1,5 +1,6 @@
 import type { GuardianFormData, StudentFormData } from '../pages/StudentsPage';
 import type { StaffFormData } from '../pages/StaffPage';
+import { testEmail } from './identity';
 
 /**
  * Builders for people test data. Every call returns values that are unique per run
@@ -29,7 +30,7 @@ export function makeStudent(overrides: Partial<StudentFormData> = {}): StudentFo
         gender: 'Male',
         dateOfBirth: '01/15/2012',
         phoneNumber: uniquePhone('024'),
-        email: `student.${id}@example.com`,
+        email: testEmail('student', id),
         status: 'Active',
         address: '12 Test Street, Accra',
         notes: 'E2E test student',
@@ -42,7 +43,7 @@ export function makeGuardian(overrides: Partial<GuardianFormData> = {}): Guardia
     return {
         firstName: 'Kofi',
         lastName: `Mensah${id}`,
-        email: `guardian.${id}@example.com`,
+        email: testEmail('guardian', id),
         phoneNumber: uniquePhone('020'),
         relationship: 'Father',
         address: '5 Guardian Road, Accra',
@@ -59,7 +60,7 @@ export function makeStaff(overrides: Partial<StaffFormData> = {}): StaffFormData
         lastName: `Owusu${id}`,
         gender: 'Female',
         primaryContactNumber: uniquePhone('054'),
-        email: `staff.${id}@example.com`,
+        email: testEmail('staff', id),
         dateOfJoining: '01/10/2024',
         dateOfBirth: '03/22/1990',
         maritalStatus: 'Single',

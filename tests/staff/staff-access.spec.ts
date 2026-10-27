@@ -48,7 +48,7 @@ test.describe.serial('Staff — sign-in access', () => {
         await login.expectPasswordUpdateRequired();
         await login.completeRequiredPasswordUpdate(NEW_PASSWORD);
 
-        await expect(page).toHaveURL(/localhost:4200\/dashboard/);
+        await expect(page).toHaveURL(/\/dashboard/);
         await expect(page.getByText(new RegExp(`Welcome Back, ${staff.firstName}`))).toBeVisible();
         await close();
     });
@@ -63,7 +63,7 @@ test.describe.serial('Staff — sign-in access', () => {
     test('the new password signs in without asking for another change', async ({ browser }) => {
         const { page, close } = await freshLogin(browser, staff.email, NEW_PASSWORD);
 
-        await expect(page).toHaveURL(/localhost:4200\/dashboard/);
+        await expect(page).toHaveURL(/\/dashboard/);
         await expect(page.getByText(new RegExp(`Welcome Back, ${staff.firstName}`))).toBeVisible();
         await close();
     });
@@ -87,7 +87,7 @@ test.describe.serial('Staff — sign-in access', () => {
         const reset = await freshLogin(browser, staff.email, TEMP_PASSWORD);
         await reset.login.expectPasswordUpdateRequired();
         await reset.login.completeRequiredPasswordUpdate(AFTER_RESET_PASSWORD);
-        await expect(reset.page).toHaveURL(/localhost:4200\/dashboard/);
+        await expect(reset.page).toHaveURL(/\/dashboard/);
         await reset.close();
         currentPassword = AFTER_RESET_PASSWORD;
     });
@@ -106,7 +106,7 @@ test.describe.serial('Staff — sign-in access', () => {
         expect(response.ok()).toBeTruthy();
 
         const login = await freshLogin(browser, staff.email, currentPassword);
-        await expect(login.page).toHaveURL(/localhost:4200\/dashboard/);
+        await expect(login.page).toHaveURL(/\/dashboard/);
         await expect(login.page).not.toHaveURL(/teacher-dashboard/);
         await login.close();
     });
@@ -135,7 +135,7 @@ test.describe.serial('Staff — sign-in access', () => {
         const login = await freshLogin(browser, staff.email, TEMP_PASSWORD);
         await login.login.expectPasswordUpdateRequired();
         await login.login.completeRequiredPasswordUpdate('Another#Pass1234');
-        await expect(login.page).toHaveURL(/localhost:4200\/dashboard/);
+        await expect(login.page).toHaveURL(/\/dashboard/);
         await login.close();
     });
 });

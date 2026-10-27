@@ -33,6 +33,6 @@ export async function signInAndSetPassword(
     const session = await signIn(browser, username, TEMP_PASSWORD);
     await session.login.expectPasswordUpdateRequired();
     await session.login.completeRequiredPasswordUpdate(newPassword);
-    await session.page.waitForURL(/localhost:4200\/dashboard/);
+    await session.page.waitForURL(/\/dashboard/);
     return session;
 }

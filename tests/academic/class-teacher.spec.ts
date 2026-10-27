@@ -26,7 +26,7 @@ const ids = { withTeacher: 0, without: 0 };
 /** Signs in as the teacher and opens My Classes. */
 async function myClasses(browser: Browser, teacher: typeof first) {
     const session = await signIn(browser, teacher.email, PASSWORD);
-    await session.page.waitForURL(/localhost:4200\/dashboard/);
+    await session.page.waitForURL(/\/dashboard/);
     await session.page.goto('/academic/my-classes');
     await expect(session.page.getByRole('heading', { name: 'My Classes' }).first()).toBeVisible();
     await session.page.waitForLoadState('networkidle');

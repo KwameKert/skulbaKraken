@@ -1,0 +1,37 @@
+{
+  "className": "Lesson Plan Class",
+  "classId": 5,
+  "termId": 7,
+  "termName": "First Term (edited)",
+  "teacher": {
+    "employeeType": "Teacher",
+    "firstName": "Ama",
+    "lastName": "Owusumvr52lqu2u",
+    "gender": "Female",
+    "primaryContactNumber": "0542519579",
+    "email": "staff.mvr52lqu2u.kraken@gmail.com",
+    "dateOfJoining": "01/10/2024",
+    "dateOfBirth": "03/22/1990",
+    "maritalStatus": "Single",
+    "workExperience": "5 years",
+    "emergencyContactName": "Yaw Owusu",
+    "emergencyContactNumber": "0207909477",
+    "address": "8 Staff Lane, Kumasi",
+    "status": "Active",
+    "notes": "E2E test staff"
+  },
+  "teacherPassword": "Timetable#2026",
+  "courses": [
+    {
+      "name": "Plan Maths",
+      "classCourseId": 7,
+      "periods": 3
+    },
+    {
+      "name": "Plan English",
+      "classCourseId": 8,
+      "periods": 3
+    }
+  ],
+  "lessonCount": 6
+}

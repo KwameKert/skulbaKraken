@@ -99,7 +99,8 @@ test.describe.serial('Staff — data integrity', () => {
         await openSavedStaff(page);
         await expect(page.getByText(newPhone)).toBeVisible();
         await expect(page.getByText('99 Updated Avenue, Tema')).toBeVisible();
-        await expect(page.getByText(/^\s*admin\s*$/i)).toBeVisible();
+        // the role badge is upper case; the signed-in administrator's own name ("Admin") also shows in the header
+        await expect(page.getByText('ADMIN', { exact: true })).toBeVisible();
     });
 
     test('deleting the staff member removes them from the list and search', async ({ page }) => {

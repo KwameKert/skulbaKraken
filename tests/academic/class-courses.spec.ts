@@ -46,7 +46,7 @@ async function studentCourses(page: Page, studentId: number) {
 
 async function asCourseTeacher(browser: Browser, teacher: typeof mathsTeacher) {
     const session = await signIn(browser, teacher.email, PASSWORD);
-    await session.page.waitForURL(/localhost:4200\/dashboard/);
+    await session.page.waitForURL(/\/dashboard/);
     await session.page.goto('/academic/my-courses');
     await expect(session.page.getByRole('heading', { name: 'My Courses' }).first()).toBeVisible();
     await session.page.waitForLoadState('networkidle');

@@ -3,6 +3,7 @@ import { authenticatedTest as test, expect, loggedOut } from '../fixtures';
 import { LoginPage } from '../pages/LoginPage';
 import { StudentsPage } from '../pages/StudentsPage';
 import { makeGuardian, makeStudent } from '../data/people';
+import { getLoginCredentials } from '../data/credentials';
 import { TEMP_PASSWORD } from '../helpers/session';
 
 /**
@@ -64,7 +65,7 @@ async function signInGuardian(browser: Browser, phone: string, password: string,
     await login.visit();
     await login.login(phone, firstLogin ? TEMP_PASSWORD : password);
     if (firstLogin) await login.completeRequiredPasswordUpdate(password);
-    await page.waitForURL(/localhost:4200\/dashboard/);
+    await page.waitForURL(/\/dashboard/);
     await expect(page.locator('.dropdown.my-4 a[data-bs-toggle="dropdown"]')).toBeVisible();
     await expect.poll(() => family.studentIds.length, { message: 'sidebar never loaded the children' }).toBeGreaterThan(0);
 
@@ -206,7 +207,7 @@ test.describe.serial('Guardian data isolation', () => {
     test.describe('a parent cannot browse people they are not responsible for', () => {
         // Lists and searches take no id, so the risk is a parent seeing everyone. Searching for
         // family B's unique names makes a leak certain to show up on the first page.
-        const ADMIN_EMAIL = process.env.TEST_USER_EMAIL ?? 'kraken@gmail.com';
+        const ADMIN_EMAIL = getLoginCredentials().email;
 
         async function asParentA(browser: Browser, path: (apiBase: string) => string) {
             const a = await signInGuardian(browser, guardianA.phoneNumber, PASSWORD);

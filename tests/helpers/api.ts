@@ -25,7 +25,7 @@ export interface ApiSession {
 export async function openApiSession(browser: Browser, username: string, password: string): Promise<ApiSession> {
     const session = await signIn(browser, username, password);
     const page = session.page;
-    await page.waitForURL(/localhost:4200\/dashboard/);
+    await page.waitForURL(/\/dashboard/);
     const [request] = await Promise.all([
         page.waitForRequest(r => !!r.headers()['authorization'] && /\/(users|academics)\/api\//.test(r.url())),
         page.reload(),

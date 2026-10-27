@@ -3,6 +3,7 @@ import { authenticatedTest as test, expect } from '../fixtures';
 import { StaffPage } from '../pages/StaffPage';
 import { StudentsPage } from '../pages/StudentsPage';
 import { makeGuardian, makeStaff, makeStudent } from '../data/people';
+import { testEmail } from '../data/identity';
 import { signIn, signInAndSetPassword } from '../helpers/session';
 
 /**
@@ -23,7 +24,7 @@ const guardian = makeGuardian({ isPrimary: true });
 const ids = { student: 0, guardian: 0, colleague: 0, teacher: 0 };
 /** Real create payloads captured from the admin UI, so a refusal can only come from authorization. */
 const payloads: { student?: Record<string, any>; employee?: Record<string, any> } = {};
-const uniqueEmail = () => `probe.${Date.now()}.${Math.random().toString(36).slice(2, 6)}@example.com`;
+const uniqueEmail = () => testEmail('probe', `${Date.now()}.${Math.random().toString(36).slice(2, 6)}`);
 
 interface Api {
     page: Page;
@@ -37,7 +38,7 @@ interface Api {
 async function asTeacher(browser: Browser): Promise<Api> {
     const session = await signIn(browser, teacher.email, PASSWORD);
     const page = session.page;
-    await page.waitForURL(/localhost:4200\/dashboard/);
+    await page.waitForURL(/\/dashboard/);
     const [request] = await Promise.all([
         page.waitForRequest(r => !!r.headers()['authorization'] && /\/(users|academics)\/api\//.test(r.url())),
         page.reload(),

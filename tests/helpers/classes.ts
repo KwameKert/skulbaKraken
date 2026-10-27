@@ -8,11 +8,12 @@ export async function createClass(
     name: string,
     status: 'ACTIVE' | 'INACTIVE' = 'ACTIVE',
     teacherName?: string,
+    templateName?: string,
 ): Promise<number> {
     const classPage = new ClassPage(page);
     await classPage.visit();
     await classPage.clickAddClass();
-    await classPage.fillForm({ name, description: 'e2e', status, teacherName });
+    await classPage.fillForm({ name, description: 'e2e', status, teacherName, templateName });
     const [response] = await Promise.all([
         page.waitForResponse(res => /\/classes$/.test(res.url()) && res.request().method() === 'POST'),
         classPage.submitForm(),

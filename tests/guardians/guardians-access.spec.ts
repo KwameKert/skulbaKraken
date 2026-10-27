@@ -39,7 +39,7 @@ test.describe.serial('Guardians — sign-in access', () => {
     test('first login with phone number and temporary password forces a password change', async ({ browser }) => {
         const session = await signInAndSetPassword(browser, guardian.phoneNumber, NEW_PASSWORD);
 
-        await expect(session.page).toHaveURL(/localhost:4200\/dashboard\/student-dashboard/);
+        await expect(session.page).toHaveURL(/\/dashboard\/student-dashboard/);
         await session.close();
     });
 
@@ -49,7 +49,7 @@ test.describe.serial('Guardians — sign-in access', () => {
         await stale.close();
 
         const fresh = await signIn(browser, guardian.phoneNumber, NEW_PASSWORD);
-        await expect(fresh.page).toHaveURL(/localhost:4200\/dashboard/);
+        await expect(fresh.page).toHaveURL(/\/dashboard/);
         await fresh.close();
     });
 
@@ -68,7 +68,7 @@ test.describe.serial('Guardians — sign-in access', () => {
         await old.close();
 
         const session = await signInAndSetPassword(browser, guardian.phoneNumber, AFTER_RESET_PASSWORD);
-        await expect(session.page).toHaveURL(/localhost:4200\/dashboard/);
+        await expect(session.page).toHaveURL(/\/dashboard/);
         await session.close();
     });
 
@@ -96,7 +96,7 @@ test.describe.serial('Guardians — sign-in access', () => {
         await expect(guardiansPage.rowByPhone(guardian.phoneNumber)).toHaveCount(1);
 
         const session = await signInAndSetPassword(browser, guardian.phoneNumber, NEW_PASSWORD);
-        await expect(session.page).toHaveURL(/localhost:4200\/dashboard/);
+        await expect(session.page).toHaveURL(/\/dashboard/);
         await session.close();
     });
 });

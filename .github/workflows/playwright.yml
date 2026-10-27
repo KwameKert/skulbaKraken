@@ -32,7 +32,7 @@ jobs:
         TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
         INVALID_TEST_USER_PASSWORD: ${{ secrets.INVALID_TEST_USER_PASSWORD }}
         LOGIN_SUCCESS_PATTERN: ${{ secrets.LOGIN_SUCCESS_PATTERN }}
-      run: npx playwright test
+      run: npm run test:fresh
     - name: Deploy report to GitHub Pages
       if: ${{ !cancelled() }}
       uses: peaceiris/actions-gh-pages@v3

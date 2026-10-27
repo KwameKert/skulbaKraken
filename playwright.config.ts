@@ -8,7 +8,7 @@ import path from 'path';
  */
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-/** Session saved by tests/auth.setup.ts; every project except `auth` starts logged in from it. */
+/** The test administrator's session, saved by tests/admin.auth.ts; every project except `auth` starts logged in from it. */
 const authFile = path.resolve(__dirname, 'playwright/.auth/admin.json');
 
 /**
@@ -18,7 +18,7 @@ const authFile = path.resolve(__dirname, 'playwright/.auth/admin.json');
  * every other project wait for it.
  */
 const withSetup = process.env.RUN_SETUP === '1';
-const afterSetup = withSetup ? ['setup'] : ['auth'];
+const afterSetup = ['admin-auth'];
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -45,21 +45,30 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    {
-      name: 'auth',
-      testMatch: '**/auth.setup.ts',
-      use: { ...devices['Desktop Chrome'] },
-    },
     ...(withSetup
       ? [{
+          // only a setup run needs the tenant owner: they create the administrator
+          name: 'auth',
+          testMatch: '**/auth.setup.ts',
+          use: { ...devices['Desktop Chrome'] },
+        }, {
           name: 'setup',
           testMatch: '**/setup/**/*.spec.ts',
           dependencies: ['auth'],
           fullyParallel: false,
           workers: 1,
+          // the administrator's session: 01a-admin-user.spec.ts creates the administrator as the tenant
+          // and saves it, and every later setup file runs as that administrator
           use: { ...devices['Desktop Chrome'], storageState: authFile },
         }]
       : []),
+    {
+      name: 'admin-auth',
+      testMatch: '**/admin.auth.ts',
+      // after a setup run the administrator is new, so sign in again once setup has finished
+      dependencies: withSetup ? ['setup'] : [],
+      use: { ...devices['Desktop Chrome'] },
+    },
     {
       name: 'academic',
       testMatch: '**/academic/**/*.spec.ts',

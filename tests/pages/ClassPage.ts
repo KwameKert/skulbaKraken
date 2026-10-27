@@ -6,6 +6,7 @@ export interface ClassFormData {
     teacherName?: string; // text to match in the ng-select dropdown
     description?: string;
     status?: 'ACTIVE' | 'INACTIVE';
+    templateName?: string; // the timetable template, matched in the ng-select dropdown
 }
 
 export class ClassPage extends BasePage {
@@ -76,6 +77,11 @@ export class ClassPage extends BasePage {
 
         if (data.status) {
             await this.page.locator('select[formcontrolname="status"]').selectOption(data.status);
+        }
+
+        if (data.templateName) {
+            await this.page.locator('ng-select[formcontrolname="templateId"]').click();
+            await this.page.locator('.ng-option').filter({ hasText: data.templateName }).first().click();
         }
     }
 
