@@ -10,6 +10,17 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: Which tests to run
+        type: choice
+        default: fresh
+        options:
+          - fresh     
+          - setup      
+          - flows    
+          - features
 jobs:
   test:
     timeout-minutes: 60
@@ -34,7 +45,7 @@ jobs:
         TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
         INVALID_TEST_USER_PASSWORD: ${{ secrets.INVALID_TEST_USER_PASSWORD }}
         LOGIN_SUCCESS_PATTERN: ${{ secrets.LOGIN_SUCCESS_PATTERN }}
-      run: npm run test:setup
+      run: npm run test:${{ (github.event_name == 'workflow_dispatch' && inputs.test_type) || 'fresh' }}
     - name: Deploy report to GitHub Pages
       if: ${{ !cancelled() }}
       uses: peaceiris/actions-gh-pages@v3
