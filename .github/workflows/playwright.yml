@@ -30,6 +30,8 @@ jobs:
         TEST_RESET_SECRET: ${{ secrets.TEST_RESET_SECRET }}
         TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
         TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+        TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
+        TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
         INVALID_TEST_USER_PASSWORD: ${{ secrets.INVALID_TEST_USER_PASSWORD }}
         LOGIN_SUCCESS_PATTERN: ${{ secrets.LOGIN_SUCCESS_PATTERN }}
       run: npm run test:fresh
