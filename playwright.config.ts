@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
+import fs from 'fs';
 import path from 'path';
 
 /**
@@ -19,6 +20,12 @@ const authFile = path.resolve(__dirname, 'playwright/.auth/admin.json');
  */
 const withSetup = process.env.RUN_SETUP === '1';
 const afterSetup = ['admin-auth'];
+
+
+if (withSetup && !fs.existsSync(authFile)) {
+  fs.mkdirSync(path.dirname(authFile), { recursive: true });
+  fs.writeFileSync(authFile, JSON.stringify({ cookies: [], origins: [] }));
+}
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -47,20 +54,20 @@ export default defineConfig({
   projects: [
     ...(withSetup
       ? [{
-          // only a setup run needs the tenant owner: they create the administrator
-          name: 'auth',
-          testMatch: '**/auth.setup.ts',
-          use: { ...devices['Desktop Chrome'] },
-        }, {
-          name: 'setup',
-          testMatch: '**/setup/**/*.spec.ts',
-          dependencies: ['auth'],
-          fullyParallel: false,
-          workers: 1,
-          // the administrator's session: 01a-admin-user.spec.ts creates the administrator as the tenant
-          // and saves it, and every later setup file runs as that administrator
-          use: { ...devices['Desktop Chrome'], storageState: authFile },
-        }]
+        // only a setup run needs the tenant owner: they create the administrator
+        name: 'auth',
+        testMatch: '**/auth.setup.ts',
+        use: { ...devices['Desktop Chrome'] },
+      }, {
+        name: 'setup',
+        testMatch: '**/setup/**/*.spec.ts',
+        dependencies: ['auth'],
+        fullyParallel: false,
+        workers: 1,
+        // the administrator's session: 01a-admin-user.spec.ts creates the administrator as the tenant
+        // and saves it, and every later setup file runs as that administrator
+        use: { ...devices['Desktop Chrome'], storageState: authFile },
+      }]
       : []),
     {
       name: 'admin-auth',

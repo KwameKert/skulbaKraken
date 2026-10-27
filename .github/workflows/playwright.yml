@@ -34,7 +34,7 @@ jobs:
         TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
         INVALID_TEST_USER_PASSWORD: ${{ secrets.INVALID_TEST_USER_PASSWORD }}
         LOGIN_SUCCESS_PATTERN: ${{ secrets.LOGIN_SUCCESS_PATTERN }}
-      run: npm run test:fresh
+      run: npm run test:setup
     - name: Deploy report to GitHub Pages
       if: ${{ !cancelled() }}
       uses: peaceiris/actions-gh-pages@v3
