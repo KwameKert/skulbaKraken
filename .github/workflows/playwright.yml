@@ -61,7 +61,7 @@ jobs:
           args=""
           for p in $(echo "$PROJECTS" | tr ',' ' '); do args="$args --project=$p"; done
           if [ -z "$args" ]; then echo "test_type=projects needs the projects input"; exit 1; fi
-          npx playwright test $args --workers=3 --retries=0 --reporter=list
+          npx playwright test $args --workers=1 --retries=0 --reporter=list
         else
           npm run test:$TEST_TYPE
         fi
