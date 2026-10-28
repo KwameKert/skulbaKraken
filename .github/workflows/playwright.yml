@@ -21,6 +21,15 @@ on:
           - setup      
           - flows    
           - features
+          - projects
+      projects:
+        description: 'Only for test_type=projects: project names separated by spaces or commas (e.g. students academic)'
+        type: string
+        default: ''
+concurrency:
+  group: skulba-remote
+  cancel-in-progress: false
+
 jobs:
   test:
     timeout-minutes: 60
@@ -45,7 +54,17 @@ jobs:
         TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
         INVALID_TEST_USER_PASSWORD: ${{ secrets.INVALID_TEST_USER_PASSWORD }}
         LOGIN_SUCCESS_PATTERN: ${{ secrets.LOGIN_SUCCESS_PATTERN }}
-      run: npm run test:${{ (github.event_name == 'workflow_dispatch' && inputs.test_type) || 'fresh' }}
+        TEST_TYPE: ${{ (github.event_name == 'workflow_dispatch' && inputs.test_type) || 'fresh' }}
+        PROJECTS: ${{ inputs.projects }}
+      run: |
+        if [ "$TEST_TYPE" = "projects" ]; then
+          args=""
+          for p in $(echo "$PROJECTS" | tr ',' ' '); do args="$args --project=$p"; done
+          if [ -z "$args" ]; then echo "test_type=projects needs the projects input"; exit 1; fi
+          npx playwright test $args --workers=3 --retries=0 --reporter=list
+        else
+          npm run test:$TEST_TYPE
+        fi
     - name: Deploy report to GitHub Pages
       if: ${{ !cancelled() }}
       uses: peaceiris/actions-gh-pages@v3
